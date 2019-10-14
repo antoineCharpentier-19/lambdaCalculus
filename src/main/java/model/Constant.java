@@ -1,4 +1,4 @@
-package main.java.model;
+package model;
 
-public abstract class Constant implements Expression {
+public abstract class Constant extends Node {
 }

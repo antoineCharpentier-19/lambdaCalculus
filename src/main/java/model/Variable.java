@@ -1,4 +1,4 @@
-package main.java.model;
+package model;
 
-public class Variable implements Expression {
+public class Variable extends Node {
 }

@@ -1,4 +1,4 @@
-package main.java.model;
+package model;
 
-public class Lambda implements Expression {
+public class Lambda extends Node {
 }

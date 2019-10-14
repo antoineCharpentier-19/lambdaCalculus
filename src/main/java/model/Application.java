@@ -1,4 +1,8 @@
-package main.java.model;
+package model;
 
-public class Application implements Expression {
+import model.Applicable;
+
+public class Application extends Node {
+    public Applicable function;
+    public Node parameter;
 }
