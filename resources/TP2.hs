@@ -20,3 +20,7 @@ myAppend xs ys = myAppend' xs
                             else if length xs == 1
                                 then (head xs):ys
                                 else (head xs):myAppend' (tail xs)
+
+cons' = (\a -> \b -> \f -> f a b)
+head' = (\c -> c (\a -> \b -> a))
+tail' = (\c -> c (\a -> \b -> b))
