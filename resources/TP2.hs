@@ -24,3 +24,6 @@ myAppend xs ys = myAppend' xs
 cons' = (\a -> \b -> \f -> f a b)
 head' = (\c -> c (\a -> \b -> a))
 tail' = (\c -> c (\a -> \b -> b))
+
+f1 :: Bool -> Bool
+f1 b = (\x -> x) b 
