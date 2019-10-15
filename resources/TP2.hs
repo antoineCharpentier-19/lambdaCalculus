@@ -27,3 +27,6 @@ tail' = (\c -> c (\a -> \b -> b))
 
 f1 :: Bool -> Bool
 f1 b = (\x -> x) b 
+
+if' = (\x -> if x then x else x) 
+not' = (\x -> not x)
