@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Variable extends Node {
-    String name;
+    private String name;
 
     @Override
     public String toString() {
