@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 public class IfThenElse extends Node {
-    private Node cond;
-    private Node left;
-    private Node right;
+    private final Node cond;
+    private final Node left;
+    private final Node right;
 
     public IfThenElse(Node cond, Node left, Node right) {
         this.cond = cond;
