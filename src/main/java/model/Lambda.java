@@ -1,19 +1,20 @@
 package model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-@AllArgsConstructor
 public class Lambda extends Node {
-    private String formalParam;
-    private Node body;
+    private final String formalParam;
+    private final Node body;
+
+    public Lambda(String formalParam, Node body) {
+        this.formalParam = formalParam;
+        this.body = body;
+    }
 
     @Override
     public String toString() {
-        return "(\\" + formalParam + " -> " + body + ")";
+        return "(\\" + formalParam + " -> " + body + ")" ;
     }
 
     public Node reduceByName() {
@@ -24,15 +25,11 @@ public class Lambda extends Node {
         if (!name.equals(formalParam)) { // name - capturing
             return new Lambda(formalParam, body.replaceOcc(name, arg));
         } else {
-            return clone();
+            return this;
         }
     }
 
     public Node betaReduce(Node arg) {
         return body.replaceOcc(formalParam, arg);
-    }
-
-    public Node clone() {
-        return new Lambda(formalParam, body.clone());
     }
 }

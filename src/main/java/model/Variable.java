@@ -1,14 +1,14 @@
 package model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
-@AllArgsConstructor
 public class Variable extends Node {
-    private String name;
+    private final String name;
+
+    public Variable(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
@@ -16,14 +16,10 @@ public class Variable extends Node {
     }
 
     public Node reduceByName() {
-        return clone();
+        return this;
     }
 
     public Node replaceOcc(String argName, Node arg) {
-        return name.equals(argName) ? arg : clone();
-    }
-
-    public Node clone() {
-        return new Variable(name);
+        return name.equals(argName) ? arg : this;
     }
 }

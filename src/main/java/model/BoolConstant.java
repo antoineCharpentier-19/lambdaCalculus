@@ -1,13 +1,11 @@
 package model;
 
-import lombok.AllArgsConstructor;
-import lombok.Setter;
-
-@Setter
-@AllArgsConstructor
 public class BoolConstant extends Node {
+    private final boolean value;
 
-    private boolean value;
+    public BoolConstant(boolean value) {
+        this.value = value;
+    }
 
     @Override
     public String toString() {
@@ -15,15 +13,11 @@ public class BoolConstant extends Node {
     }
 
     public Node reduceByName() {
-        return clone();
+        return this;
     }
 
     public Node replaceOcc(String name, Node arg) {
-        return clone();
-    }
-
-    public Node clone() {
-        return new BoolConstant(value);
+        return this;
     }
 
     public boolean getValue() {

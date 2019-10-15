@@ -1,15 +1,18 @@
 package model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
+@Getter
 public class IfThenElse extends Node {
+    private final Node cond;
+    private final Node left;
+    private final Node right;
 
-    private Node cond;
-    private Node left;
-    private Node right;
+    public IfThenElse(Node cond, Node left, Node right) {
+        this.cond = cond;
+        this.left = left;
+        this.right = right;
+    }
 
     @Override
     public String toString() {
@@ -17,7 +20,7 @@ public class IfThenElse extends Node {
     }
 
     public Node reduceByName() {
-        return ((BoolConstant)cond.reduceByName()).getValue() ? left.reduceByName() : right.reduceByName();
+        return ((BoolConstant) cond.reduceByName()).getValue() ? left.reduceByName() : right.reduceByName();
     }
 
     public Node replaceOcc(String name, Node arg) {
@@ -26,9 +29,5 @@ public class IfThenElse extends Node {
                 left.replaceOcc(name, arg),
                 right.replaceOcc(name, arg)
         );
-    }
-
-    public Node clone() {
-        return new IfThenElse(cond.clone(), left.clone(), right.clone());
     }
 }

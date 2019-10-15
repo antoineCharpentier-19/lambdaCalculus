@@ -25,8 +25,12 @@ cons' = (\a -> \b -> \f -> f a b)
 head' = (\c -> c (\a -> \b -> a))
 tail' = (\c -> c (\a -> \b -> b))
 
+-- lambda pure
 f1 :: Bool -> Bool
-f1 b = (\x -> x) b 
+f1 b = (\x -> x) b
+
+f2 :: Bool -> Bool -> Bool
+f2 b c = (\x -> (\y -> x)) b c
 
 if' = (\x -> if x then x else x) 
 not' = (\x -> not x)
