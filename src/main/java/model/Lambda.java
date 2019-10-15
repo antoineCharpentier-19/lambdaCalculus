@@ -21,6 +21,18 @@ public class Lambda extends Node {
     }
 
     public Node replaceOcc(String name, Node arg) {
-        return body.replaceOcc(name, arg);
+        if (!name.equals(formalParam)) { // name - capturing
+            return new Lambda(formalParam, body.replaceOcc(name, arg));
+        } else {
+            return clone();
+        }
+    }
+
+    public Node betaReduce(Node arg) {
+        return body.replaceOcc(formalParam, arg);
+    }
+
+    public Node clone() {
+        return new Lambda(formalParam, body.clone());
     }
 }

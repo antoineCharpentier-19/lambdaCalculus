@@ -16,10 +16,14 @@ public class Variable extends Node {
     }
 
     public Node reduceByName() {
-        return this;
+        return clone();
     }
 
     public Node replaceOcc(String argName, Node arg) {
-        return name.equals(argName) ? arg : new Variable(name);
+        return name.equals(argName) ? arg : clone();
+    }
+
+    public Node clone() {
+        return new Variable(name);
     }
 }

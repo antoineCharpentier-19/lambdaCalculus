@@ -18,7 +18,7 @@ public class Application extends Node {
 
     public Node reduceByName() {
         if (left instanceof Lambda) {
-            return left.replaceOcc(((Lambda) left).getFormalParam(), right).reduceByName();
+            return ((Lambda) left).betaReduce(right).reduceByName();
         } else {
             return left.reduceByName();
         }
@@ -26,5 +26,10 @@ public class Application extends Node {
 
     public Node replaceOcc(String name, Node arg) {
         return new Application(left.replaceOcc(name, arg), right.replaceOcc(name, arg));
+    }
+
+
+    public Node clone() {
+        return new Application(left.clone(), right.clone());
     }
 }

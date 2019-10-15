@@ -15,7 +15,13 @@ public class ReduceByNameTest {
                         new Lambda("x", new Variable("x")),
                         new Lambda("y", new Variable("y"))
                 );
-
+        // (\x -> x ) (\y -> y )
         assertEquals("(\\y -> y )", node.reduceByName().toString());
+
+        node =
+            new Application(
+                    new Lambda("x", new Variable("x")),
+                    new Lambda("y", new Variable("y"))
+            );
     }
 }
