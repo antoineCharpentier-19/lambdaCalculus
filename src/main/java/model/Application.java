@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Application extends Node {
-    public Node left;
-    public Node right;
+    private Node left;
+    private Node right;
 
     @Override
     public String toString() {
@@ -18,7 +18,7 @@ public class Application extends Node {
 
     public Node reduceByName() {
         if (left instanceof Lambda) {
-            return left.replaceOcc(((Lambda) left).formalParam, right).reduceByName();
+            return left.replaceOcc(((Lambda) left).getFormalParam(), right).reduceByName();
         } else {
             return left.reduceByName();
         }

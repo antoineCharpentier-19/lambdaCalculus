@@ -8,8 +8,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Lambda extends Node {
-    String formalParam;
-    Node body;
+    private String formalParam;
+    private Node body;
 
     @Override
     public String toString() {
@@ -23,5 +23,4 @@ public class Lambda extends Node {
     public Node replaceOcc(String name, Node arg) {
         return body.replaceOcc(name, arg);
     }
-
 }
