@@ -1,5 +1,6 @@
 package model;
 
+import Util.NodeUpdateObserver;
 import lombok.Getter;
 
 @Getter
@@ -16,8 +17,14 @@ public class BoolNot extends Node {
     }
 
     public Node reduceByName() {
-        BoolConstant bool = (BoolConstant)body.reduceByName();
-        return new BoolConstant(!bool.getValue());
+        return ((BoolConstant)body.reduceByName()).opposite();
+    }
+
+    @Override
+    protected Node debugReduceByName(NodeUpdateObserver notifier) {
+        BoolConstant result = ((BoolConstant)body.debugReduceByName(BoolNot::new)).opposite();
+        notifier.onUpdate(result);
+        return result;
     }
 
     public Node replaceOcc(String name, Node arg) {

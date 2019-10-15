@@ -1,5 +1,6 @@
 package model;
 
+import Util.NodeUpdateObserver;
 import lombok.Getter;
 
 @Getter
@@ -22,4 +23,5 @@ public class Variable extends Node {
     public Node replaceOcc(String argName, Node arg) {
         return name.equals(argName) ? arg : this;
     }
+
 }

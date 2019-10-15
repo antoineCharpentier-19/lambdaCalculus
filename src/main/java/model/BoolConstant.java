@@ -1,7 +1,7 @@
 package model;
 
 public class BoolConstant extends Node {
-    private final boolean value;
+    private boolean value;
 
     public BoolConstant(boolean value) {
         this.value = value;
@@ -12,9 +12,8 @@ public class BoolConstant extends Node {
         return Boolean.toString(value);
     }
 
-    public Node reduceByName() {
-        return this;
-    }
+    @Override
+    public Node reduceByName() { return this; }
 
     public Node replaceOcc(String name, Node arg) {
         return this;
@@ -22,5 +21,9 @@ public class BoolConstant extends Node {
 
     public boolean getValue() {
         return value;
+    }
+
+    public BoolConstant opposite(){
+        return new BoolConstant(!value);
     }
 }

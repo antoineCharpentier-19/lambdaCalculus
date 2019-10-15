@@ -15,19 +15,18 @@ public class ReduceByNameTest {
         );
 
         // (\x -> x ) (\y -> y )
-        System.out.println("node = " + node);
-        assertEquals("(\\y -> y)", node.reduceByName().toString());
+        System.out.println("--------------------------");
+        assertEquals("(\\y -> y)", node.debugReduceByName().toString());
 
         // (\x -> (\y -> x) false) true équivalent à (\x -> (\y -> x)) true false
         node = new Application(
                 new Lambda("x",
                         new Application(
                                 new Lambda("y", new Variable("x")),
-                                new BoolConstant(false))),
-                new BoolConstant(true)
-        );
-        System.out.println("node = " + node);
-        assertEquals("true", node.reduceByName().toString());
+                                new Lambda("a", new Variable("a")))),
+                new Lambda("b", new Variable("b")));
+        System.out.println("--------------------------");
+        assertEquals("(\\b -> b)", node.debugReduceByName().toString());
 
     }
 
@@ -42,8 +41,8 @@ public class ReduceByNameTest {
                         new BoolConstant(x)
                 );
         Node applied1 = node1.apply(true);
-        System.out.println("node1 = " + applied1);
-        assertEquals("false", applied1.reduceByName().toString());
+        System.out.println("--------------------------");
+        assertEquals("false", applied1.debugReduceByName().toString());
 
         Function<Boolean, Node> ifThenElse1 = x ->
                 new IfThenElse(new BoolConstant(x.booleanValue()),
@@ -51,11 +50,11 @@ public class ReduceByNameTest {
                         new BoolConstant(true)
                 );
         Node applied2True = ifThenElse1.apply(true);
-        System.out.println("ifThenElse1 = " + applied2True);
-        assertEquals("false", applied2True.reduceByName().toString());
+        System.out.println("--------------------------");
+        assertEquals("false", applied2True.debugReduceByName().toString());
         Node applied2False = ifThenElse1.apply(false);
-        System.out.println("ifThenElse1 = " + applied2False);
-        assertEquals("true", applied2False.reduceByName().toString());
+        System.out.println("--------------------------");
+        assertEquals("true", applied2False.debugReduceByName().toString());
 
         Function<Boolean, Node> ifThenElse2 = x ->
                 new IfThenElse(
@@ -64,10 +63,10 @@ public class ReduceByNameTest {
                         new BoolConstant(true)
                 );
         Node applied3True = ifThenElse2.apply(true);
-        System.out.println("ifThenElse2 = " + applied3True);
-        assertEquals("true", applied3True.reduceByName().toString());
+        System.out.println("--------------------------");
+        assertEquals("true", applied3True.debugReduceByName().toString());
         Node applied3False = ifThenElse2.apply(false);
-        System.out.println("ifThenElse2 = " + applied3False);
-        assertEquals("false", applied3False.reduceByName().toString());
+        System.out.println("--------------------------");
+        assertEquals("false", applied3False.debugReduceByName().toString());
     }
 }

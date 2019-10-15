@@ -1,5 +1,6 @@
 package model;
 
+import Util.NodeUpdateObserver;
 import lombok.Getter;
 
 @Getter
@@ -14,11 +15,17 @@ public class Lambda extends Node {
 
     @Override
     public String toString() {
-        return "(\\" + formalParam + " -> " + body + ")" ;
+        return "(\\" + formalParam + " -> " + body + ")";
     }
 
+    @Override
     public Node reduceByName() {
         return new Lambda(formalParam, body.reduceByName());
+    }
+
+    @Override
+    protected Node debugReduceByName(NodeUpdateObserver notifier) {
+        return new Lambda(formalParam, body.debugReduceByName(newVal -> notifier.onUpdate(reduceByName())));
     }
 
     public Node replaceOcc(String name, Node arg) {
