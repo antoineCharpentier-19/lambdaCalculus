@@ -14,4 +14,12 @@ public class Variable extends Node {
     public String toString() {
         return name + " ";
     }
+
+    public Node reduceByName() {
+        return this;
+    }
+
+    public Node replaceOcc(String argName, Node arg) {
+        return name.equals(argName) ? arg : new Variable(name);
+    }
 }

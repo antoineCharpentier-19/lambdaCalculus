@@ -12,5 +12,7 @@ public class main {
                 );
 
         System.out.println("node = " + node);
+
+        System.out.println("the same node but reduced = " + node.reduceByName());
     }
 }
