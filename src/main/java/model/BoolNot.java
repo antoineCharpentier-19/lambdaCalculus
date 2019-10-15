@@ -11,9 +11,14 @@ public class BoolNot extends Node {
 
     private Node body;
 
+    @Override
+    public String toString() {
+        return "not " + body;
+    }
+
     public Node reduceByName() {
-        Node bool = body.reduceByName();
-        return new BoolConstant(!((BoolConstant)bool).getValue());
+        BoolConstant bool = (BoolConstant)body.reduceByName();
+        return new BoolConstant(!bool.getValue());
     }
 
     public Node replaceOcc(String name, Node arg) {

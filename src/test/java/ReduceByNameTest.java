@@ -1,6 +1,8 @@
 import model.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Function;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ReduceByNameTest {
@@ -13,13 +15,11 @@ public class ReduceByNameTest {
                         new Lambda("y", new Variable("y"))
                 );
         // (\x -> x ) (\y -> y )
-        assertEquals("(\\y -> y )", node.reduceByName().toString());
+        assertEquals("(\\y -> y)", node.reduceByName().toString());
 
-        node =
-            new Application(
-                    new Lambda("x", new Variable("x")),
-                    new Lambda("y", new Variable("y"))
-            );
+        node = new Lambda("x", new Lambda("y", new Variable("x")));
+        assertEquals("(\\x -> x)", node.reduceByName().toString());
+
     }
 
     @Test
@@ -34,5 +34,14 @@ public class ReduceByNameTest {
                 );
 
         assertEquals("false", node1.reduceByName().toString());
+
+        Function<Boolean, Node> ifthenelse1 = x ->
+                new IfThenElse(new BoolConstant(x.booleanValue()),
+                        new BoolConstant(false),
+                        new BoolConstant(true)
+                );
+
+        assertEquals("false", ifthenelse1.apply(true).reduceByName().toString());
+        assertEquals("true", ifthenelse1.apply(false).reduceByName().toString());
     }
 }

@@ -12,7 +12,7 @@ public class Variable extends Node {
 
     @Override
     public String toString() {
-        return name + " ";
+        return name;
     }
 
     public Node reduceByName() {

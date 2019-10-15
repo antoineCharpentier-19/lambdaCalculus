@@ -11,7 +11,7 @@ public class BoolConstant extends Node {
 
     @Override
     public String toString() {
-        return value + "";
+        return Boolean.toString(value);
     }
 
     public Node reduceByName() {
