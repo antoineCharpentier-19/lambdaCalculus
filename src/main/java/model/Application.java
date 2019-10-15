@@ -1,8 +1,18 @@
 package model;
 
-import model.Applicable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class Application extends Node {
-    public Applicable function;
-    public Node parameter;
+    public Node left;
+    public Node right;
+
+    @Override
+    public String toString() {
+        return left + " " + right;
+    }
 }
