@@ -1,8 +1,8 @@
 package model;
 
-import util.NodeUpdateObserver;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import util.NodeUpdateObserver;
 
 import java.util.function.BiFunction;
 
@@ -13,12 +13,13 @@ public class BoolBinary extends Node {
     private Node right;
     private Type op;
 
-    public static enum Type {
-        OR("||", (a,b) -> new BoolConstant(a || b)),
-        AND("&&", (a,b) -> new BoolConstant(a && b)),
-        XOR("xor", (a,b) -> new BoolConstant(a != b));
+    public enum Type {
+        OR("||", (a, b) -> new BoolConstant(a || b)),
+        AND("&&", (a, b) -> new BoolConstant(a && b)),
+        XOR("xor", (a, b) -> new BoolConstant(a != b));
         private String stringVal;
         private BiFunction<Boolean, Boolean, BoolConstant> converter;
+
         Type(String stringVal, BiFunction<Boolean, Boolean, BoolConstant> converter) {
             this.converter = converter;
             this.stringVal = stringVal;
@@ -27,37 +28,24 @@ public class BoolBinary extends Node {
 
     @Override
     public Node reduceByName() {
-        Node reducedLeft = left.reduceByName();
-        boolean leftVal = ((BoolConstant) reducedLeft).getValue();
+        BoolConstant reducedLeft = (BoolConstant) left.reduceByName();
         // special cases
-        if(op == Type.AND && !leftVal) return new BoolConstant(false);
-        if(op == Type.OR && leftVal) return new BoolConstant(true);
-
-        Node reducedRight = right.reduceByName();
-        boolean rightVal = ((BoolConstant) reducedRight).getValue();
-        return op.converter.apply(leftVal, rightVal);
+        if (op == Type.AND && !reducedLeft.getValue() || op == Type.OR && reducedLeft.getValue())
+            return reducedLeft;
+        BoolConstant reducedRight = (BoolConstant) right.reduceByName();
+        return op.converter.apply(reducedLeft.getValue(), reducedRight.getValue());
     }
 
     @Override
     public Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node reducedLeft = left.debugReduceByName(newVal->notifier.onUpdate(new BoolBinary(newVal,right, op)));
-        boolean leftVal = ((BoolConstant) reducedLeft).getValue();
+        BoolConstant reducedLeft = (BoolConstant) left.debugReduceByName(newVal -> notifier.onUpdate(new BoolBinary(newVal, right, op)));
         // special cases
-        if(op == Type.AND && !leftVal) {
-            Node result = new BoolConstant(false);
-            notifier.onUpdate(result);
-            return result;
+        if (op == Type.AND && !reducedLeft.getValue() || op == Type.OR && reducedLeft.getValue()) {
+            notifier.onUpdate(reducedLeft);
+            return reducedLeft;
         }
-        if(op == Type.OR && leftVal) {
-            Node result = new BoolConstant(true);
-            notifier.onUpdate(result);
-            return result;
-        }
-
-        Node reducedRight = right.debugReduceByName(newVal->notifier.onUpdate(new BoolBinary(reducedLeft,newVal, op)));
-        boolean rightVal = ((BoolConstant) reducedRight).getValue();
-
-        BoolConstant result =  op.converter.apply(leftVal, rightVal);
+        BoolConstant reducedRight = (BoolConstant) right.debugReduceByName(newVal -> notifier.onUpdate(new BoolBinary(reducedLeft, newVal, op)));
+        BoolConstant result = op.converter.apply(reducedLeft.getValue(), reducedRight.getValue());
         notifier.onUpdate(result);
         return result;
     }
