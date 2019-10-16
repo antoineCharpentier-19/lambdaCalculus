@@ -1,6 +1,6 @@
 package model;
 
-import Util.NodeUpdateObserver;
+import util.NodeUpdateObserver;
 import lombok.Getter;
 
 @Getter
@@ -20,14 +20,15 @@ public class Application extends Node {
 
     @Override
     public Node reduceByName() {
-        return ((Lambda) left).betaReduce(right).reduceByName();
+        return ((Lambda) left.reduceByName()).betaReduce(right).reduceByName();
     }
 
     @Override
     protected Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node replaced = ((Lambda) left).betaReduce(right);
-        notifier.onUpdate(replaced);
-        return replaced.debugReduceByName(notifier);
+        Node leftReduced = left.debugReduceByName(newVal -> notifier.onUpdate(new Application(newVal, right)));
+        Node betaReduced = ((Lambda) leftReduced).betaReduce(right);
+        notifier.onUpdate(betaReduced);
+        return betaReduced.debugReduceByName(notifier);
     }
 
     public Node replaceOcc(String name, Node arg) {

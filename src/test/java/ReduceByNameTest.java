@@ -18,16 +18,24 @@ public class ReduceByNameTest {
         System.out.println("--------------------------");
         assertEquals("(\\y -> y)", node.debugReduceByName().toString());
 
-        // (\x -> (\y -> x) false) true équivalent à (\x -> (\y -> x)) true false
+        // (\x -> (\y -> x) a) b équivalent à (\x -> (\y -> x)) a b
         node = new Application(
                 new Lambda("x",
                         new Application(
                                 new Lambda("y", new Variable("x")),
-                                new Lambda("a", new Variable("a")))),
-                new Lambda("b", new Variable("b")));
+                                new Variable("a"))),
+                new Variable("b"));
         System.out.println("--------------------------");
-        assertEquals("(\\b -> b)", node.debugReduceByName().toString());
+        assertEquals("b", node.debugReduceByName().toString());
 
+        node = new Application(
+                new Application(
+                        new Lambda("x", new Lambda("y", new Variable("x"))),
+                        new Variable("b")),
+                new Variable("a")
+        );
+        System.out.println("--------------------------");
+        node.debugReduceByName();
     }
 
     @Test

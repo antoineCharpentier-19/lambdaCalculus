@@ -1,6 +1,6 @@
 package model;
 
-import Util.NodeUpdateObserver;
+import util.NodeUpdateObserver;
 import lombok.Getter;
 
 @Getter

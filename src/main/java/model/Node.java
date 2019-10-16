@@ -1,6 +1,6 @@
 package model;
 
-import Util.NodeUpdateObserver;
+import util.NodeUpdateObserver;
 
 public abstract class Node {
 
