@@ -20,12 +20,7 @@ public class Lambda extends Node {
 
     @Override
     public Node reduceByName() {
-        return new Lambda(formalParam, body.reduceByName());
-    }
-
-    @Override
-    protected Node debugReduceByName(NodeUpdateObserver notifier) {
-        return new Lambda(formalParam, body.debugReduceByName(newVal -> notifier.onUpdate(reduceByName())));
+        return this;
     }
 
     public Node replaceOcc(String name, Node arg) {
