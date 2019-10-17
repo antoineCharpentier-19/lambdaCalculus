@@ -1,17 +1,12 @@
 package model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import util.NodeUpdateObserver;
 
 import java.util.function.BiFunction;
 
-@AllArgsConstructor
 @Getter
 public class BoolBinary extends Node {
-    private Node left;
-    private Node right;
-    private Type op;
 
     public enum Type {
         OR("||", (a, b) -> new BoolConstant(a || b)),
@@ -24,6 +19,16 @@ public class BoolBinary extends Node {
             this.converter = converter;
             this.stringVal = stringVal;
         }
+    }
+
+    private final Node left;
+    private final Node right;
+    private final Type op;
+
+    public BoolBinary(Node left, Node right, Type op) {
+        this.left = left;
+        this.right = right;
+        this.op = op;
     }
 
     @Override
