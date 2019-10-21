@@ -97,4 +97,37 @@ public class ReduceByNameTest {
                 BoolBinary.Type.OR);
         or.debugReduceByName();
     }
+
+    @Test
+    public void IntTest() {
+        // (\x -> + x (\y -> - 1 y)) 2 2
+        Node node = new Application(
+                new Application(
+                        new Lambda(
+                                "x",
+                                new IntBinary(
+                                        new Variable("x"),
+                                        new Lambda(
+                                                "y",
+                                                new IntBinary(
+                                                        new IntConstant(1),
+                                                        new Variable("y"),
+                                                        IntBinary.Type.MINUS)),
+                                        IntBinary.Type.PLUS)
+                                ),
+                        new IntConstant(2)
+                ),
+                new IntConstant(2)
+        );
+        node.debugReduceByName();
+
+        // 8/4 + 1x3
+        node = new IntBinary(
+                new IntBinary(new IntConstant(8), new IntConstant(4),
+                        IntBinary.Type.DIVIDE),
+                new IntBinary(new IntConstant(1), new IntConstant(3),
+                        IntBinary.Type.TIMES),
+                IntBinary.Type.PLUS);
+        node.debugReduceByName();
+    }
 }
