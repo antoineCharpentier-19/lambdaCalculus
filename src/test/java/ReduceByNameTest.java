@@ -1,6 +1,7 @@
 import model.*;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.text.DefaultEditorKit;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -105,22 +106,19 @@ public class ReduceByNameTest {
                 new Application(
                         new Lambda(
                                 "x",
-                                new IntBinary(
-                                        new Variable("x"),
-                                        new Lambda(
-                                                "y",
-                                                new IntBinary(
-                                                        new IntConstant(1),
-                                                        new Variable("y"),
-                                                        IntBinary.Type.MINUS)),
-                                        IntBinary.Type.PLUS)
-                                ),
+                                new Lambda("y",
+                                        new IntBinary(
+                                                new IntConstant(1),
+                                                new Variable("y"),
+                                                IntBinary.Type.MINUS))
+                        ),
                         new IntConstant(2)
                 ),
                 new IntConstant(2)
         );
         node.debugReduceByName();
 
+        System.out.println("--------------------------");
         // 8/4 + 1x3
         node = new IntBinary(
                 new IntBinary(new IntConstant(8), new IntConstant(4),
