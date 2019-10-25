@@ -17,7 +17,7 @@ public class Variable extends Node {
 
     public Node reduceByName() {
         return this;
-    }
+    } // TODO : something is wrong with this / should not happen
 
     public Node replaceOcc(String argName, Node arg) {
         return name.equals(argName) ? arg : this;

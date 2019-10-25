@@ -1,7 +1,6 @@
 import model.*;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.text.DefaultEditorKit;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -46,7 +45,7 @@ public class ReduceByNameTest {
                 new Application(
                         new Lambda(
                                 "x",
-                                new BoolNot(new Variable("x"))
+                                new UnaryOp(UnaryOp.Type.NOT, new Variable("x"))
                         ),
                         new BoolConstant(x)
                 );
@@ -81,21 +80,16 @@ public class ReduceByNameTest {
 
         // ((true && true) && (true && true))
         System.out.println("--------------------------");
-        Node andAndAndAnd = new BoolBinary(
-                                new BoolBinary(new BoolConstant(true), new BoolConstant(true),
-                                        BoolBinary.Type.AND),
-                                new BoolBinary(new BoolConstant(true), new BoolConstant(true),
-                                        BoolBinary.Type.AND),
-                                BoolBinary.Type.AND);
+        Node andAndAndAnd = new BinaryOp(BinaryOp.Operator.AND,
+                                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true)),
+                                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true))
+                );
         andAndAndAnd.debugReduceByName();
 
         System.out.println("--------------------------");
-        Node or = new BoolBinary(
-                new BoolBinary(new BoolConstant(true), new BoolConstant(false),
-                        BoolBinary.Type.OR),
-                new BoolBinary(new BoolConstant(false), new BoolConstant(false),
-                        BoolBinary.Type.OR),
-                BoolBinary.Type.OR);
+        Node or = new BinaryOp(BinaryOp.Operator.OR,
+                new BinaryOp(BinaryOp.Operator.OR, new BoolConstant(true), new BoolConstant(false)),
+                new BinaryOp(BinaryOp.Operator.OR, new BoolConstant(false), new BoolConstant(false)));
         or.debugReduceByName();
     }
 
@@ -107,10 +101,11 @@ public class ReduceByNameTest {
                         new Lambda(
                                 "x",
                                 new Lambda("y",
-                                        new IntBinary(
-                                                new IntConstant(1),
-                                                new Variable("y"),
-                                                IntBinary.Type.MINUS))
+                                        new BinaryOp(
+                                                BinaryOp.Operator.MINUS,
+                                                new UnaryOp(UnaryOp.Type.NEGATIVE, new IntConstant(1)),
+                                                new Variable("y")
+                                                ))
                         ),
                         new IntConstant(2)
                 ),
@@ -120,12 +115,16 @@ public class ReduceByNameTest {
 
         System.out.println("--------------------------");
         // 8/4 + 1x3
-        node = new IntBinary(
-                new IntBinary(new IntConstant(8), new IntConstant(4),
-                        IntBinary.Type.DIVIDE),
-                new IntBinary(new IntConstant(1), new IntConstant(3),
-                        IntBinary.Type.TIMES),
-                IntBinary.Type.PLUS);
+        node = new BinaryOp(
+                BinaryOp.Operator.PLUS,
+                new BinaryOp(BinaryOp.Operator.DIVIDE,new IntConstant(8), new IntConstant(4)),
+                new BinaryOp( BinaryOp.Operator.TIMES, new IntConstant(1), new IntConstant(3))
+                );
         node.debugReduceByName();
+    }
+
+    @Test
+    void test(){
+        System.out.println(new UnaryOp(UnaryOp.Type.NEGATIVE, new IntConstant(1)).debugReduceByName());
     }
 }

@@ -22,8 +22,4 @@ public class BoolConstant extends Node {
     public boolean getValue() {
         return value;
     }
-
-    public BoolConstant opposite() {
-        return new BoolConstant(!value);
-    }
 }
