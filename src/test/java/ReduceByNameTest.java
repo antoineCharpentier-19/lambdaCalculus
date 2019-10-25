@@ -126,7 +126,7 @@ public class ReduceByNameTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {0, 1, 2}) // six numbers
+    @ValueSource(ints = {1, 2, 5}) // six numbers
     void recursionTest(int number){
 
         RecursiveLambda fac = new RecursiveLambda("FAC");

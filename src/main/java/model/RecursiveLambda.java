@@ -33,11 +33,6 @@ public class RecursiveLambda extends Node {
 
     @Override
     protected String toString(Set<RecursiveLambda> visited) {
-        if(visited.contains(this)) {
-            return name;
-        } else {
-            visited.add(this);
-            return lambda.toString(visited);
-        }
+        return name;
     }
 }

@@ -11,7 +11,7 @@ public abstract class Node {
 
     public Node debugReduceByName() {
         System.out.println(this);
-        return debugReduceByName(newVal -> System.out.println(newVal));
+        return debugReduceByName(newVal -> System.out.println(newVal.toString(new HashSet<>())));
     }
 
     protected Node debugReduceByName(NodeUpdateObserver notifier) {
