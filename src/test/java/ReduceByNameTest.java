@@ -1,5 +1,7 @@
 import model.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.function.Function;
 
@@ -45,7 +47,7 @@ public class ReduceByNameTest {
                 new Application(
                         new Lambda(
                                 "x",
-                                new UnaryOp(UnaryOp.Type.NOT, new Variable("x"))
+                                new UnaryOp(UnaryOp.Operator.NOT, new Variable("x"))
                         ),
                         new BoolConstant(x)
                 );
@@ -103,7 +105,7 @@ public class ReduceByNameTest {
                                 new Lambda("y",
                                         new BinaryOp(
                                                 BinaryOp.Operator.MINUS,
-                                                new UnaryOp(UnaryOp.Type.NEGATIVE, new IntConstant(1)),
+                                                new UnaryOp(UnaryOp.Operator.NEGATIVE, new IntConstant(1)),
                                                 new Variable("y")
                                                 ))
                         ),
@@ -123,8 +125,25 @@ public class ReduceByNameTest {
         node.debugReduceByName();
     }
 
-    @Test
-    void test(){
-        System.out.println(new UnaryOp(UnaryOp.Type.NEGATIVE, new IntConstant(1)).debugReduceByName());
+    @ParameterizedTest
+    @ValueSource(ints = {0, 1, 2}) // six numbers
+    void recursionTest(int number){
+
+        RecursiveCall fac = new RecursiveCall("FAC");
+        Lambda lambda = new Lambda(
+                "n",
+                new IfThenElse(
+                        new BinaryOp(BinaryOp.Operator.EQUAL, new Variable("n"), new IntConstant(0)),
+                        new IntConstant(1),
+                        new BinaryOp(BinaryOp.Operator.TIMES, new Variable("n"), fac)
+                )
+        );
+        fac.setRecursiveFunction(lambda);
+        Environment.recursiveFunctions.add(fac);
+        Node nodeRecursion = new Application(
+                lambda,
+                new IntConstant(number)
+        );
+        nodeRecursion.debugReduceByName();
     }
 }
