@@ -43,13 +43,13 @@ public class BinaryOp extends Node {
 
     @Override
     public Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node reducedLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new BinaryOp(newVal, right, op)));
+        Node reducedLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new BinaryOp(op, newVal, right)));
         // special cases
         if (op == Type.AND && !((BoolConstant)reducedLeft).getValue() || op == Type.OR && ((BoolConstant)reducedLeft).getValue()) {
             notifier.onUpdate(reducedLeft);
             return reducedLeft;
         }
-        Node reducedRight = right.debugReduceByName(newVal -> notifier.onUpdate(new BinaryOp(reducedLeft, newVal, op)));
+        Node reducedRight = right.debugReduceByName(newVal -> notifier.onUpdate(new BinaryOp(op, reducedLeft, newVal)));
         Node result = op.converter.apply(reducedLeft, reducedRight);
         notifier.onUpdate(result);
         return result;
@@ -57,7 +57,7 @@ public class BinaryOp extends Node {
 
     @Override
     public Node replaceOcc(String name, Node arg) {
-        return new BinaryOp(left.replaceOcc(name, arg), right.replaceOcc(name, arg), op);
+        return new BinaryOp(op, left.replaceOcc(name, arg), right.replaceOcc(name, arg));
     }
 
     public String toString() {

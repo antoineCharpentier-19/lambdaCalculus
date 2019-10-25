@@ -80,21 +80,16 @@ public class ReduceByNameTest {
 
         // ((true && true) && (true && true))
         System.out.println("--------------------------");
-        Node andAndAndAnd = new BinaryOp(
-                                new BinaryOp(new BoolConstant(true), new BoolConstant(true),
-                                        BinaryOp.Type.AND),
-                                new BinaryOp(new BoolConstant(true), new BoolConstant(true),
-                                        BinaryOp.Type.AND),
-                BinaryOp.Type.AND);
+        Node andAndAndAnd = new BinaryOp(BinaryOp.Type.AND,
+                                new BinaryOp(BinaryOp.Type.AND, new BoolConstant(true), new BoolConstant(true)),
+                                new BinaryOp(BinaryOp.Type.AND, new BoolConstant(true), new BoolConstant(true))
+                );
         andAndAndAnd.debugReduceByName();
 
         System.out.println("--------------------------");
-        Node or = new BinaryOp(
-                new BinaryOp(new BoolConstant(true), new BoolConstant(false),
-                        BinaryOp.Type.OR),
-                new BinaryOp(new BoolConstant(false), new BoolConstant(false),
-                        BinaryOp.Type.OR),
-                BinaryOp.Type.OR);
+        Node or = new BinaryOp(BinaryOp.Type.OR,
+                new BinaryOp(BinaryOp.Type.OR, new BoolConstant(true), new BoolConstant(false)),
+                new BinaryOp(BinaryOp.Type.OR, new BoolConstant(false), new BoolConstant(false)));
         or.debugReduceByName();
     }
 
@@ -107,9 +102,10 @@ public class ReduceByNameTest {
                                 "x",
                                 new Lambda("y",
                                         new BinaryOp(
+                                                BinaryOp.Type.MINUS,
                                                 new IntConstant(1),
-                                                new Variable("y"),
-                                                BinaryOp.Type.MINUS))
+                                                new Variable("y")
+                                                ))
                         ),
                         new IntConstant(2)
                 ),
@@ -120,11 +116,10 @@ public class ReduceByNameTest {
         System.out.println("--------------------------");
         // 8/4 + 1x3
         node = new BinaryOp(
-                new BinaryOp(new IntConstant(8), new IntConstant(4),
-                        BinaryOp.Type.DIVIDE),
-                new BinaryOp(new IntConstant(1), new IntConstant(3),
-                        BinaryOp.Type.TIMES),
-                BinaryOp.Type.PLUS);
+                BinaryOp.Type.PLUS,
+                new BinaryOp(BinaryOp.Type.DIVIDE,new IntConstant(8), new IntConstant(4)),
+                new BinaryOp( BinaryOp.Type.TIMES, new IntConstant(1), new IntConstant(3))
+                );
         node.debugReduceByName();
     }
 }
