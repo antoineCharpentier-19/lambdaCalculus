@@ -1,7 +1,6 @@
 import model.*;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.text.DefaultEditorKit;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

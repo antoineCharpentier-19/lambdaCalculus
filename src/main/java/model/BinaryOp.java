@@ -1,17 +1,21 @@
 package model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import util.NodeUpdateObserver;
 
 import java.util.function.BiFunction;
 
-@AllArgsConstructor
 @Data
 public class BinaryOp extends Node {
-    private Type op;
-    private Node left;
-    private Node right;
+    private final Node left;
+    private final Node right;
+    private final Type op;
+
+    public BinaryOp(Type op, Node left, Node right) {
+        this.left = left;
+        this.right = right;
+        this.op = op;
+    }
 
     public enum Type {
         PLUS("+", (a, b) -> new IntConstant(((IntConstant) a).getValue() + ((IntConstant) b).getValue())),
