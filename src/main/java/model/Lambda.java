@@ -1,9 +1,6 @@
 package model;
 
-import util.NodeUpdateObserver;
 import lombok.Getter;
-
-import java.util.Set;
 
 @Getter
 public class Lambda extends Node {
@@ -16,8 +13,8 @@ public class Lambda extends Node {
     }
 
     @Override
-    protected String toString(Set<RecursiveLambda> visited) {
-        return "(\\" + formalParam + " -> " + body.toString(visited) + ")";
+    public String toString() {
+        return "(\\" + formalParam + " -> " + body.toString() + ")";
     }
 
     @Override

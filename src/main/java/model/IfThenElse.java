@@ -3,8 +3,6 @@ package model;
 import util.NodeUpdateObserver;
 import lombok.Getter;
 
-import java.util.Set;
-
 @Getter
 public class IfThenElse extends Node {
     private final Node cond;
@@ -18,8 +16,8 @@ public class IfThenElse extends Node {
     }
 
     @Override
-    protected String toString(Set<RecursiveLambda> visited) {
-        return "if (" + cond.toString(visited) + ") then " + left.toString(visited) + " else " + right.toString(visited);
+    public String toString() {
+        return "if (" + cond.toString() + ") then " + left.toString() + " else " + right.toString();
     }
 
     @Override
@@ -35,6 +33,7 @@ public class IfThenElse extends Node {
         if (newCond.getValue()) {
             result = newLeft;
         } else {
+            notifier.onUpdate(right);
             result = right.debugReduceByName(notifier);
         }
         return result;

@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import util.NodeUpdateObserver;
 
-import java.util.Set;
-
 @Data
 @AllArgsConstructor
 public class RecursiveLambda extends Node {
@@ -23,16 +21,17 @@ public class RecursiveLambda extends Node {
 
     @Override
     protected Node debugReduceByName(NodeUpdateObserver notifier) {
+        notifier.onUpdate(lambda);
         return lambda.debugReduceByName(notifier);
     }
 
     @Override
     public Node replaceOcc(String name, Node arg) {
-        return lambda.replaceOcc(name, arg);
+        return this;
     }
 
     @Override
-    protected String toString(Set<RecursiveLambda> visited) {
+    public String toString() {
         return name;
     }
 }

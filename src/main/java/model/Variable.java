@@ -2,8 +2,6 @@ package model;
 
 import lombok.Getter;
 
-import java.util.Set;
-
 @Getter
 public class Variable extends Node {
     private final String name;
@@ -13,7 +11,7 @@ public class Variable extends Node {
     }
 
     @Override
-    protected String toString(Set<RecursiveLambda> visited) {
+    public String toString() {
         return name;
     }
 

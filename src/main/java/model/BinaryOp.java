@@ -3,7 +3,6 @@ package model;
 import lombok.Data;
 import util.NodeUpdateObserver;
 
-import java.util.Set;
 import java.util.function.BiFunction;
 
 @Data
@@ -67,8 +66,8 @@ public class BinaryOp extends Node {
         return new BinaryOp(op, left.replaceOcc(name, arg), right.replaceOcc(name, arg));
     }
 
-    protected String toString(Set<RecursiveLambda> visited) {
-        return "(" + left.toString(visited) + op.stringVal + right.toString(visited) + ")";
+    public String toString() {
+        return "(" + left.toString() + op.stringVal + right.toString() + ")";
     }
 
 }

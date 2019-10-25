@@ -3,7 +3,6 @@ package model;
 import lombok.AllArgsConstructor;
 import util.NodeUpdateObserver;
 
-import java.util.Set;
 import java.util.function.Function;
 
 @AllArgsConstructor
@@ -29,8 +28,8 @@ public class UnaryOp extends Node {
     }
 
     @Override
-    protected String toString(Set<RecursiveLambda> visited) {
-        return "(" + op.stringVal + " " + body.toString(visited) + ")";
+    public String toString() {
+        return "(" + op.stringVal + " " + body.toString() + ")";
     }
 
     public Node reduceByName() {
