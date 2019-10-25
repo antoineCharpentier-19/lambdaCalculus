@@ -18,7 +18,7 @@ public class Variable extends Node {
     }
 
     public Node reduceByName() {  // TODO : create irreductible super class
-        throw new UnsupportedOperationException("This should not happen : variable should be ");
+        return this;
     }
 
     public Node replaceOcc(String argName, Node arg) {
