@@ -40,8 +40,9 @@ public class UnaryOp extends Node {
     @Override
     protected Node debugReduceByName(NodeUpdateObserver notifier) {
         Node result = (body.debugReduceByName(UnaryOp::new));
+        result = op.converter.apply(body.reduceByName());
         notifier.onUpdate(result);
-        return op.converter.apply(body.reduceByName());
+        return result;
     }
 
     public Node replaceOcc(String name, Node arg) {

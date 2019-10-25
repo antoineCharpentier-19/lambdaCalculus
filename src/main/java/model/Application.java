@@ -19,7 +19,7 @@ public class Application extends Node {
     }
 
     @Override
-    public Node reduceByName() {
+    public Node reduceByName() { // TODO : add interface for reduced types
         return ((Lambda) left.reduceByName()).betaReduce(right).reduceByName();
     }
 

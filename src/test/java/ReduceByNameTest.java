@@ -80,16 +80,16 @@ public class ReduceByNameTest {
 
         // ((true && true) && (true && true))
         System.out.println("--------------------------");
-        Node andAndAndAnd = new BinaryOp(BinaryOp.Type.AND,
-                                new BinaryOp(BinaryOp.Type.AND, new BoolConstant(true), new BoolConstant(true)),
-                                new BinaryOp(BinaryOp.Type.AND, new BoolConstant(true), new BoolConstant(true))
+        Node andAndAndAnd = new BinaryOp(BinaryOp.Operator.AND,
+                                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true)),
+                                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true))
                 );
         andAndAndAnd.debugReduceByName();
 
         System.out.println("--------------------------");
-        Node or = new BinaryOp(BinaryOp.Type.OR,
-                new BinaryOp(BinaryOp.Type.OR, new BoolConstant(true), new BoolConstant(false)),
-                new BinaryOp(BinaryOp.Type.OR, new BoolConstant(false), new BoolConstant(false)));
+        Node or = new BinaryOp(BinaryOp.Operator.OR,
+                new BinaryOp(BinaryOp.Operator.OR, new BoolConstant(true), new BoolConstant(false)),
+                new BinaryOp(BinaryOp.Operator.OR, new BoolConstant(false), new BoolConstant(false)));
         or.debugReduceByName();
     }
 
@@ -102,7 +102,7 @@ public class ReduceByNameTest {
                                 "x",
                                 new Lambda("y",
                                         new BinaryOp(
-                                                BinaryOp.Type.MINUS,
+                                                BinaryOp.Operator.MINUS,
                                                 new UnaryOp(UnaryOp.Type.NEGATIVE, new IntConstant(1)),
                                                 new Variable("y")
                                                 ))
@@ -116,10 +116,15 @@ public class ReduceByNameTest {
         System.out.println("--------------------------");
         // 8/4 + 1x3
         node = new BinaryOp(
-                BinaryOp.Type.PLUS,
-                new BinaryOp(BinaryOp.Type.DIVIDE,new IntConstant(8), new IntConstant(4)),
-                new BinaryOp( BinaryOp.Type.TIMES, new IntConstant(1), new IntConstant(3))
+                BinaryOp.Operator.PLUS,
+                new BinaryOp(BinaryOp.Operator.DIVIDE,new IntConstant(8), new IntConstant(4)),
+                new BinaryOp( BinaryOp.Operator.TIMES, new IntConstant(1), new IntConstant(3))
                 );
         node.debugReduceByName();
+    }
+
+    @Test
+    void test(){
+        System.out.println(new UnaryOp(UnaryOp.Type.NEGATIVE, new IntConstant(1)).debugReduceByName());
     }
 }
