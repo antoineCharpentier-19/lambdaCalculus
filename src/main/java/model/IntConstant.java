@@ -3,6 +3,7 @@ package model;
 import lombok.Getter;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 public class IntConstant extends Node {
@@ -14,7 +15,7 @@ public class IntConstant extends Node {
     }
 
     @Override
-    public String toString() {
+    protected String toString(Set<RecursiveLambda> visited) {
         return Integer.toString(value);
     }
 

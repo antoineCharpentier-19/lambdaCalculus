@@ -2,6 +2,9 @@ package model;
 
 import util.NodeUpdateObserver;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class Node {
 
     public abstract Node reduceByName();
@@ -17,5 +20,9 @@ public abstract class Node {
 
     public abstract Node replaceOcc(String name, Node arg);
 
-    public abstract String toString();
+    public String toString() {
+        return toString(new HashSet<>());
+    }
+
+    protected abstract String toString(Set<RecursiveLambda> visited);
 }

@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Objects;
+import java.util.Set;
 
 public class BoolConstant extends Node {
     private boolean value;
@@ -10,7 +11,7 @@ public class BoolConstant extends Node {
     }
 
     @Override
-    public String toString() {
+    protected String toString(Set<RecursiveLambda> visited) {
         return Boolean.toString(value);
     }
 

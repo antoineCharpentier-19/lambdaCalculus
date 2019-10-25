@@ -3,6 +3,8 @@ package model;
 import util.NodeUpdateObserver;
 import lombok.Getter;
 
+import java.util.Set;
+
 @Getter
 public class Application extends Node {
     private final Node left;
@@ -14,8 +16,8 @@ public class Application extends Node {
     }
 
     @Override
-    public String toString() {
-        return left + " " + right;
+    protected String toString(Set<RecursiveLambda> visited) {
+        return left.toString(visited) + " " + right.toString(visited);
     }
 
     @Override

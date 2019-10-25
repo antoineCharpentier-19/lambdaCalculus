@@ -129,17 +129,18 @@ public class ReduceByNameTest {
     @ValueSource(ints = {0, 1, 2}) // six numbers
     void recursionTest(int number){
 
-        RecursiveCall fac = new RecursiveCall("FAC");
+        RecursiveLambda fac = new RecursiveLambda("FAC");
         Lambda lambda = new Lambda(
                 "n",
                 new IfThenElse(
                         new BinaryOp(BinaryOp.Operator.EQUAL, new Variable("n"), new IntConstant(0)),
                         new IntConstant(1),
-                        new BinaryOp(BinaryOp.Operator.TIMES, new Variable("n"), fac)
+                        new BinaryOp(BinaryOp.Operator.TIMES, new Variable("n"), new Application(fac,
+                                                                                        new BinaryOp(BinaryOp.Operator.MINUS,
+                                                                                                     new Variable("n"), new IntConstant(1))
                 )
-        );
-        fac.setRecursiveFunction(lambda);
-        Environment.recursiveFunctions.add(fac);
+        )));
+        fac.setLambda(lambda);
         Node nodeRecursion = new Application(
                 lambda,
                 new IntConstant(number)
