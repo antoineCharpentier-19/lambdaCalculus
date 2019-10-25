@@ -3,25 +3,24 @@ package model;
 import lombok.AllArgsConstructor;
 import util.NodeUpdateObserver;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @AllArgsConstructor
 public class UnaryOp extends Node {
 
-    public enum Type {
+    public enum Operator {
         NOT("not", a -> new BoolConstant(!((BoolConstant) a).getValue())),
         NEGATIVE("-", a -> new IntConstant(-((IntConstant) a).getValue()));
         private String stringVal;
         private  Function<Node, Node> converter;
 
-        Type(String stringVal, Function<Node, Node> converter) {
+        Operator(String stringVal, Function<Node, Node> converter) {
             this.converter = converter;
             this.stringVal = stringVal;
         }
     }
 
-    private Type op;
+    private Operator op;
     private Node body;
 
     public UnaryOp(Node body) {

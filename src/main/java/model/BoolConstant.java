@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 public class BoolConstant extends Node {
     private boolean value;
 
@@ -10,6 +12,19 @@ public class BoolConstant extends Node {
     @Override
     public String toString() {
         return Boolean.toString(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BoolConstant that = (BoolConstant) o;
+        return getValue() == that.getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
     }
 
     @Override

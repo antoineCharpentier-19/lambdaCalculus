@@ -24,7 +24,9 @@ public class BinaryOp extends Node {
         DIVIDE("/", (a, b) -> new IntConstant(((IntConstant) a).getValue() / ((IntConstant) b).getValue())),
         OR("||", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() || ((BoolConstant) b).getValue())),
         AND("&&", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() && ((BoolConstant) b).getValue())),
-        XOR("xor", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() != ((BoolConstant) b).getValue()));
+        XOR("xor", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() != ((BoolConstant) b).getValue())),
+        EQUAL("==", (a, b) -> new BoolConstant(a.equals(b))),
+        ;
         private String stringVal;
         private BiFunction<Node, Node, Node> converter;
 
