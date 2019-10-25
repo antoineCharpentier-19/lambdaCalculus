@@ -9,9 +9,9 @@ import java.util.function.BiFunction;
 @AllArgsConstructor
 @Data
 public class BinaryOp extends Node {
-    private Node left;
-    private Node right;
-    private Type op;
+    private final Node left;
+    private final Node right;
+    private final Type op;
 
     public enum Type {
         PLUS("+", (a, b) -> new IntConstant(((IntConstant) a).getValue() + ((IntConstant) b).getValue())),
@@ -32,12 +32,12 @@ public class BinaryOp extends Node {
 
     @Override
     public Node reduceByName() {
-        Node reducedLeft = (BoolConstant) left.reduceByName();
+        Node reducedLeft = left.reduceByName();
         // special cases
         if (op == Type.AND && !((BoolConstant)reducedLeft).getValue() || op == Type.OR && ((BoolConstant)reducedLeft).getValue()) {
             return reducedLeft;
         }
-        BoolConstant reducedRight = (BoolConstant) right.reduceByName();
+        Node reducedRight = right.reduceByName();
         return op.converter.apply(reducedLeft, reducedRight);
     }
 
