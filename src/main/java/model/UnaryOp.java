@@ -1,10 +1,12 @@
 package model;
 
+import lombok.AllArgsConstructor;
 import util.NodeUpdateObserver;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+@AllArgsConstructor
 public class UnaryOp extends Node {
 
     public enum Type {
@@ -28,21 +30,21 @@ public class UnaryOp extends Node {
 
     @Override
     public String toString() {
-        return "not " + body;
+        return "(" + op.stringVal + " " + body + ")";
     }
 
     public Node reduceByName() {
-        return ((BoolConstant)body.reduceByName()).opposite();
+        return op.converter.apply(body.reduceByName());
     }
 
     @Override
     protected Node debugReduceByName(NodeUpdateObserver notifier) {
         Node result = (body.debugReduceByName(UnaryOp::new));
         notifier.onUpdate(result);
-        return result;
+        return op.converter.apply(body.reduceByName());
     }
 
     public Node replaceOcc(String name, Node arg) {
-        return new BoolNot(body.replaceOcc(name, arg));
+        return new UnaryOp(op, body.replaceOcc(name, arg));
     }
 }

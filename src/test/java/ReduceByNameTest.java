@@ -46,7 +46,7 @@ public class ReduceByNameTest {
                 new Application(
                         new Lambda(
                                 "x",
-                                new BoolNot(new Variable("x"))
+                                new UnaryOp(UnaryOp.Type.NOT, new Variable("x"))
                         ),
                         new BoolConstant(x)
                 );
@@ -104,7 +104,7 @@ public class ReduceByNameTest {
                                 new Lambda("y",
                                         new BinaryOp(
                                                 BinaryOp.Type.MINUS,
-                                                new IntConstant(1),
+                                                new UnaryOp(UnaryOp.Type.NEGATIVE, new IntConstant(1)),
                                                 new Variable("y")
                                                 ))
                         ),
