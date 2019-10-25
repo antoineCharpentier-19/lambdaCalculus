@@ -31,10 +31,13 @@ public class IfThenElse extends Node {
     protected Node debugReduceByName(NodeUpdateObserver notifier) {
         BoolConstant newCond = (BoolConstant) cond.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newVal, left, right)));
         Node newLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newCond, newVal, right)));
-        Node newRight = right.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newCond, newLeft, newVal)));
-        Node result = newCond.getValue() ? newLeft : newRight;
+        Node result;
+        if (newCond.getValue()) {
+            result = newLeft;
+        } else {
+            result = right.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newCond, newLeft, newVal)));
+        }
         notifier.onUpdate(result);
-
         return result;
     }
 
