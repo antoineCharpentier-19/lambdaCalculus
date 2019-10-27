@@ -31,6 +31,7 @@ public class IfThenElse extends Node {
         Node newLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newCond, newVal, right)));
         Node result;
         if (newCond.getValue()) {
+            notifier.onUpdate(newLeft);
             result = newLeft;
         } else {
             notifier.onUpdate(right);
