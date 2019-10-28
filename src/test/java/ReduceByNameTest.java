@@ -171,10 +171,20 @@ public class ReduceByNameTest {
                                         new UnaryOp(UnaryOp.Operator.NIL, l),
                                         p,
                                         new Application(
-                                                new Application(f,
-                                                        new UnaryOp(UnaryOp.Operator.HEAD, l)),
+                                                new Application(
+                                                        f,
+                                                        new UnaryOp(UnaryOp.Operator.HEAD, l)
+                                                ),
+                                                new Application(
                                                         new Application(
-                                                                REC, new UnaryOp(UnaryOp.Operator.TAIL, l))
+                                                                new Application(
+                                                                        REC,
+                                                                        new UnaryOp(UnaryOp.Operator.TAIL, l)
+                                                                ),
+                                                                p
+                                                        ),
+                                                       f
+                                                )
                                         )
                                 )
                         )
