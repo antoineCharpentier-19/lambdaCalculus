@@ -13,11 +13,6 @@ public class Application implements Node {
         this.right = right;
     }
 
-    // TODO : this shit
-//    public Application(Node left, Node...args) {
-//        for()
-//    }
-
     @Override
     public String toString() {
         return left.toString() + " " + right.toString();

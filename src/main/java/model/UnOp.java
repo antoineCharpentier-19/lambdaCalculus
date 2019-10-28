@@ -6,9 +6,9 @@ import util.NodeUpdateObserver;
 import java.util.function.Function;
 
 @AllArgsConstructor
-public class UnaryOp implements Node {
+public class UnOp implements Node {
 
-    public enum Operator {
+    public enum Op {
         NOT("not", a -> new BoolConstant(!((BoolConstant) a).getValue())),
         NEGATIVE("-", a -> new IntConstant(-((IntConstant) a).getValue())),
         NIL("nil", a->new BoolConstant(a instanceof IntNil)),
@@ -17,16 +17,26 @@ public class UnaryOp implements Node {
         private String stringVal;
         private  Function<Node, Node> converter;
 
-        Operator(String stringVal, Function<Node, Node> converter) {
+        Op(String stringVal, Function<Node, Node> converter) {
             this.converter = converter;
             this.stringVal = stringVal;
         }
+
+        private static Op opFromString(String s) {
+            for (Op o : Op.values()) {
+                if (o.stringVal.equals(s)) {
+                    return o;
+                }
+            }
+            throw new IllegalArgumentException(s + " is not a valid binary operator.");
+        }
     }
 
-    private Operator op;
+    private Op op;
     private Node body;
 
-    public UnaryOp(Node body) {
+    public UnOp(String op, Node body) {
+        this.op = Op.opFromString(op);
         this.body = body;
     }
 
@@ -40,12 +50,12 @@ public class UnaryOp implements Node {
     }
 
     public Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node result = op.converter.apply(body.debugReduceByName(UnaryOp::new));
+        Node result = op.converter.apply(body.debugReduceByName(newVal -> new UnOp(op, newVal)));
         notifier.onUpdate(result);
         return result;
     }
 
     public Node replaceOcc(String name, Node arg) {
-        return new UnaryOp(op, body.replaceOcc(name, arg));
+        return new UnOp(op, body.replaceOcc(name, arg));
     }
 }

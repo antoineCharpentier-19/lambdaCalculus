@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static util.Utils.*;
 
 public class ReduceByNameTest {
 
@@ -26,11 +27,12 @@ public class ReduceByNameTest {
 
         // (\x -> (\y -> x) a) b
         node = new Application(
-                new Lambda("x",
+                new Lambda(
+                        "x",
                         new Application(
-                                new Lambda("y", new Variable("x")),
-                                new Variable("a"))),
-                new Variable("b"));
+                                new Lambda("y", node("x")),
+                                node("a"))),
+                node("b"));
         System.out.println("--------------------------");
         assertEquals("b", node.debugReduceByName().toString());
 
@@ -47,36 +49,25 @@ public class ReduceByNameTest {
 
     @Test
     public void boolTest() {
-        Function<Boolean, Node> node1 = x ->
-                new Application(
-                        new Lambda(
-                                "x",
-                                new UnaryOp(UnaryOp.Operator.NOT, new Variable("x"))
-                        ),
-                        new BoolConstant(x)
-                );
+        Function<Boolean, Node> node1 = x -> new Application(new Lambda("x", new UnOp(UnOp.Op.NOT, new Variable("x"))), node("x"));
         Node applied1 = node1.apply(true);
         System.out.println("--------------------------");
         assertEquals("false", applied1.debugReduceByName().toString());
-
-        Function<Boolean, Node> ifThenElse1 = x ->
-                new IfThenElse(new BoolConstant(x.booleanValue()),
-                        new BoolConstant(false),
-                        new BoolConstant(true)
-                );
+        Function<Boolean, Node> ifThenElse1 = x -> new IfThenElse(
+                new BoolConstant(x.booleanValue()),
+                node(false),
+                node(true));
         Node applied2True = ifThenElse1.apply(true);
         System.out.println("--------------------------");
         assertEquals("false", applied2True.debugReduceByName().toString());
         Node applied2False = ifThenElse1.apply(false);
         System.out.println("--------------------------");
         assertEquals("true", applied2False.debugReduceByName().toString());
-
-        Function<Boolean, Node> ifThenElse2 = x ->
-                new IfThenElse(
-                        node1.apply(x),
-                        new BoolConstant(false),
-                        new BoolConstant(true)
-                );
+        Function<Boolean, Node> ifThenElse2 = x -> new IfThenElse(
+                node1.apply(x),
+                node(false),
+                node(true)
+        );
         Node applied3True = ifThenElse2.apply(true);
         System.out.println("--------------------------");
         assertEquals("true", applied3True.debugReduceByName().toString());
@@ -86,45 +77,30 @@ public class ReduceByNameTest {
 
         // ((true && true) && (true && true))
         System.out.println("--------------------------");
-        Node andAndAndAnd = new BinaryOp(BinaryOp.Operator.AND,
-                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true)),
-                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true))
+        Node andAndAndAnd = new BiOp(
+                new BiOp(node(true), "&&", node(true)),
+                "&&",
+                new BiOp(node(true), "&&", node(true))
         );
         andAndAndAnd.debugReduceByName();
 
         System.out.println("--------------------------");
-        Node or = new BinaryOp(BinaryOp.Operator.OR,
-                new BinaryOp(BinaryOp.Operator.OR, new BoolConstant(true), new BoolConstant(false)),
-                new BinaryOp(BinaryOp.Operator.OR, new BoolConstant(false), new BoolConstant(false)));
+        Node or = new BiOp(
+                new BiOp(node(true), "||", node(false)),
+                "||",
+                new BiOp(node(false), "||", node(false)));
         or.debugReduceByName();
     }
 
     @Test
     public void IntTest() {
         // (\x -> + x (\y -> - 1 y)) 2 2
-        Node node = new Application(
-                new Application(
-                        new Lambda(
-                                "x",
-                                new Lambda("y",
-                                        new BinaryOp(
-                                                BinaryOp.Operator.MINUS,
-                                                new UnaryOp(UnaryOp.Operator.NEGATIVE, new IntConstant(1)),
-                                                new Variable("y")
-                                        ))
-                        ),
-                        new IntConstant(2)
-                ),
-                new IntConstant(2)
-        );
+        Node node = multiApply(multiLambda(new String[]{"x", "y"}, new BiOp(new UnOp(UnOp.Op.NEGATIVE, new IntConstant(1)), "-", new Variable("y"))), node(2), node(3));
         node.debugReduceByName();
 
         System.out.println("--------------------------");
         // 8/4 + 1x3
-        node = new BinaryOp(
-                BinaryOp.Operator.PLUS,
-                new BinaryOp(BinaryOp.Operator.DIVIDE, new IntConstant(8), new IntConstant(4)),
-                new BinaryOp(BinaryOp.Operator.TIMES, new IntConstant(1), new IntConstant(3))
+        node = new BiOp(new BiOp(node(8), "/", node(4)), "+", new BiOp(node(1), "*", node(3))
         );
         node.debugReduceByName();
     }
@@ -134,77 +110,43 @@ public class ReduceByNameTest {
         // six numbers
     void recursionTest(int number) {
 
-        RecursiveLambda fac = new RecursiveLambda("FAC");
-        Lambda lambda = new Lambda(
-                "n",
+        RecursiveLambda FAC = new RecursiveLambda("FAC");
+        Lambda fac = new Lambda("n",
                 new IfThenElse(
-                        new BinaryOp(BinaryOp.Operator.EQUAL, new Variable("n"), new IntConstant(0)),
-                        new IntConstant(1),
-                        new BinaryOp(BinaryOp.Operator.TIMES, new Variable("n"), new Application(fac,
-                                new BinaryOp(BinaryOp.Operator.MINUS,
-                                        new Variable("n"), new IntConstant(1))
-                        )
-                        )));
-        fac.setLambda(lambda);
+                        new BiOp(node("n"), "==", node("0")),
+                        node("1"),
+                        new BiOp(node("n"), "*", new Application(FAC, new BiOp(node("n"), "-", node("1"))))));
+        FAC.setLambda(fac);
+
         Node nodeRecursion = new Application(
-                lambda,
-                new IntConstant(number)
+                fac,
+                node(number)
         );
         nodeRecursion.debugReduceByName();
     }
 
     @Test
     void listsTest() {
-        RecursiveLambda REC = new RecursiveLambda("FOLD");
+        RecursiveLambda FOLD = new RecursiveLambda("FOLD");
+        Lambda fold = multiLambda(new String[]{"l", "p", "f"},
+                new IfThenElse(
+                        new UnOp("nil", node("l")),
+                        node("p"),
+                        multiApply(
+                                node("f"),
+                                node("p"),
+                                multiApply(FOLD, new UnOp("tail", node("l")), new UnOp("head", node("l")), node("f")))));
 
-        Variable l = new Variable("l");
-        Variable p = new Variable("p");
-        Variable f = new Variable("f");
+        FOLD.setLambda(fold);
 
-        Lambda fold = new Lambda(
-                "l",
-                new Lambda(
-                        "p",
-                        new Lambda(
-                                "f",
-                                new IfThenElse(
-                                        new UnaryOp(UnaryOp.Operator.NIL, l),
-                                        p,
-                                        new Application(
-                                                new Application(
-                                                        f,
-                                                        new UnaryOp(UnaryOp.Operator.HEAD, l)
-                                                ),
-                                                new Application(
-                                                        new Application(
-                                                                new Application(
-                                                                        REC,
-                                                                        new UnaryOp(UnaryOp.Operator.TAIL, l)
-                                                                ),
-                                                                p
-                                                        ),
-                                                       f
-                                                )
-                                        )
-                                )
-                        )
-                )
-        );
-
-        REC.setLambda(fold);
-
-        Node nodeRecursion =
-                new Application(
-                        new Application(
-                                new Application(
-                                        fold,
-                                        new IntCons(new IntConstant(1), new IntCons(new IntConstant(2), new IntCons(new IntConstant(3), new IntNil())))),
-                                new IntConstant(0)),
-                        new Lambda("x", new Lambda("y", new BinaryOp(BinaryOp.Operator.PLUS, new Variable("x"), new Variable("y")))
-                        )
-                );
+        Node nodeRecursion = multiApply(fold, intList(1, 2, 3), node(0), multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("y"))));
 
         nodeRecursion.debugReduceByName();
+    }
+
+    @Test
+    public void appTest() {
+        System.out.println(multiApply(multiLambda(new String[]{"x", "y", "z"}, new BiOp(node("x"), "+", new BiOp(node("y"), "+", node("z")))), node("1"), node("2"), node("3")));
     }
 
 }
