@@ -152,4 +152,49 @@ public class ReduceByNameTest {
         );
         nodeRecursion.debugReduceByName();
     }
+
+    @Test
+    void listsTest() {
+        RecursiveLambda REC = new RecursiveLambda("FOLD");
+
+        Variable l = new Variable("l");
+        Variable p = new Variable("p");
+        Variable f = new Variable("f");
+
+        Lambda fold = new Lambda(
+                "l",
+                new Lambda(
+                        "p",
+                        new Lambda(
+                                "f",
+                                new IfThenElse(
+                                        new UnaryOp(UnaryOp.Operator.NIL, l),
+                                        p,
+                                        new Application(
+                                                new Application(f,
+                                                        new UnaryOp(UnaryOp.Operator.HEAD, l)),
+                                                        new Application(
+                                                                REC, new UnaryOp(UnaryOp.Operator.TAIL, l))
+                                        )
+                                )
+                        )
+                )
+        );
+
+        REC.setLambda(fold);
+
+        Node nodeRecursion =
+                new Application(
+                        new Application(
+                                new Application(
+                                        fold,
+                                        new IntCons(new IntConstant(1), new IntCons(new IntConstant(2), new IntCons(new IntConstant(3), new IntNil())))),
+                                new IntConstant(0)),
+                        new Lambda("x", new Lambda("y", new BinaryOp(BinaryOp.Operator.PLUS, new Variable("x"), new Variable("y")))
+                        )
+                );
+
+        nodeRecursion.debugReduceByName();
+    }
+
 }

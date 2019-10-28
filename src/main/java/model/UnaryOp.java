@@ -10,7 +10,10 @@ public class UnaryOp implements Node {
 
     public enum Operator {
         NOT("not", a -> new BoolConstant(!((BoolConstant) a).getValue())),
-        NEGATIVE("-", a -> new IntConstant(-((IntConstant) a).getValue()));
+        NEGATIVE("-", a -> new IntConstant(-((IntConstant) a).getValue())),
+        NIL("nil", a->new BoolConstant(a instanceof IntNil)),
+        HEAD("head", a->((IntCons) a).getHead()),
+        TAIL("tail", a->((IntCons) a).getTail());
         private String stringVal;
         private  Function<Node, Node> converter;
 

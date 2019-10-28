@@ -15,7 +15,6 @@ public class Variable implements Node {
         return name;
     }
 
-    @Override
     public Node replaceOcc(String argName, Node arg) {
         return name.equals(argName) ? arg : this;
     }
