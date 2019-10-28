@@ -3,7 +3,7 @@ package model;
 import lombok.Getter;
 
 @Getter
-public class Variable extends Node {
+public class Variable implements Node {
     private final String name;
 
     public Variable(String name) {
@@ -15,12 +15,8 @@ public class Variable extends Node {
         return name;
     }
 
-    public Node reduceByName() {  // TODO : create irreductible super class
-        return this;
-    }
-
+    @Override
     public Node replaceOcc(String argName, Node arg) {
         return name.equals(argName) ? arg : this;
     }
-
 }

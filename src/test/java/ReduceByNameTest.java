@@ -1,4 +1,8 @@
 import model.*;
+import model.BoolConstant;
+import model.IntConstant;
+import model.Lambda;
+import model.Variable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -83,9 +87,9 @@ public class ReduceByNameTest {
         // ((true && true) && (true && true))
         System.out.println("--------------------------");
         Node andAndAndAnd = new BinaryOp(BinaryOp.Operator.AND,
-                                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true)),
-                                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true))
-                );
+                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true)),
+                new BinaryOp(BinaryOp.Operator.AND, new BoolConstant(true), new BoolConstant(true))
+        );
         andAndAndAnd.debugReduceByName();
 
         System.out.println("--------------------------");
@@ -107,7 +111,7 @@ public class ReduceByNameTest {
                                                 BinaryOp.Operator.MINUS,
                                                 new UnaryOp(UnaryOp.Operator.NEGATIVE, new IntConstant(1)),
                                                 new Variable("y")
-                                                ))
+                                        ))
                         ),
                         new IntConstant(2)
                 ),
@@ -119,15 +123,16 @@ public class ReduceByNameTest {
         // 8/4 + 1x3
         node = new BinaryOp(
                 BinaryOp.Operator.PLUS,
-                new BinaryOp(BinaryOp.Operator.DIVIDE,new IntConstant(8), new IntConstant(4)),
-                new BinaryOp( BinaryOp.Operator.TIMES, new IntConstant(1), new IntConstant(3))
-                );
+                new BinaryOp(BinaryOp.Operator.DIVIDE, new IntConstant(8), new IntConstant(4)),
+                new BinaryOp(BinaryOp.Operator.TIMES, new IntConstant(1), new IntConstant(3))
+        );
         node.debugReduceByName();
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 5}) // six numbers
-    void recursionTest(int number){
+    @ValueSource(ints = {1, 2, 5})
+        // six numbers
+    void recursionTest(int number) {
 
         RecursiveLambda fac = new RecursiveLambda("FAC");
         Lambda lambda = new Lambda(
@@ -136,10 +141,10 @@ public class ReduceByNameTest {
                         new BinaryOp(BinaryOp.Operator.EQUAL, new Variable("n"), new IntConstant(0)),
                         new IntConstant(1),
                         new BinaryOp(BinaryOp.Operator.TIMES, new Variable("n"), new Application(fac,
-                                                                                        new BinaryOp(BinaryOp.Operator.MINUS,
-                                                                                                     new Variable("n"), new IntConstant(1))
-                )
-        )));
+                                new BinaryOp(BinaryOp.Operator.MINUS,
+                                        new Variable("n"), new IntConstant(1))
+                        )
+                        )));
         fac.setLambda(lambda);
         Node nodeRecursion = new Application(
                 lambda,

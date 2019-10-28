@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.Objects;
 
 @Getter
-public class IntConstant extends Node {
+public class IntConstant implements Node {
 
     private int value;
 
@@ -29,12 +29,5 @@ public class IntConstant extends Node {
     @Override
     public int hashCode() {
         return Objects.hash(getValue());
-    }
-
-    @Override
-    public Node reduceByName() { return this; }
-
-    public Node replaceOcc(String name, Node arg) {
-        return this;
     }
 }

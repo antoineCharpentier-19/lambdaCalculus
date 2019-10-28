@@ -1,10 +1,10 @@
 package model;
 
-import util.NodeUpdateObserver;
 import lombok.Getter;
+import util.NodeUpdateObserver;
 
 @Getter
-public class Application extends Node {
+public class Application implements Node {
     private final Node left;
     private final Node right;
 
@@ -24,7 +24,7 @@ public class Application extends Node {
     }
 
     @Override
-    protected Node debugReduceByName(NodeUpdateObserver notifier) {
+    public Node debugReduceByName(NodeUpdateObserver notifier) {
         Node leftReduced = left.debugReduceByName(newVal -> notifier.onUpdate(new Application(newVal, right)));
         Node betaReduced = ((Lambda) leftReduced).betaReduce(right);
         notifier.onUpdate(betaReduced);

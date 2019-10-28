@@ -1,10 +1,10 @@
 package model;
 
-import util.NodeUpdateObserver;
 import lombok.Getter;
+import util.NodeUpdateObserver;
 
 @Getter
-public class IfThenElse extends Node {
+public class IfThenElse implements Node {
     private final Node cond;
     private final Node left;
     private final Node right;
@@ -26,7 +26,7 @@ public class IfThenElse extends Node {
     }
 
     @Override
-    protected Node debugReduceByName(NodeUpdateObserver notifier) {
+    public Node debugReduceByName(NodeUpdateObserver notifier) {
         BoolConstant newCond = (BoolConstant) cond.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newVal, left, right)));
         Node newLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newCond, newVal, right)));
         Node result;

@@ -6,7 +6,7 @@ import util.NodeUpdateObserver;
 import java.util.function.Function;
 
 @AllArgsConstructor
-public class UnaryOp extends Node {
+public class UnaryOp implements Node {
 
     public enum Operator {
         NOT("not", a -> new BoolConstant(!((BoolConstant) a).getValue())),
@@ -36,10 +36,8 @@ public class UnaryOp extends Node {
         return op.converter.apply(body.reduceByName());
     }
 
-    @Override
-    protected Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node result = (body.debugReduceByName(UnaryOp::new));
-        result = op.converter.apply(body.reduceByName());
+    public Node debugReduceByName(NodeUpdateObserver notifier) {
+        Node result = op.converter.apply(body.debugReduceByName(UnaryOp::new));
         notifier.onUpdate(result);
         return result;
     }

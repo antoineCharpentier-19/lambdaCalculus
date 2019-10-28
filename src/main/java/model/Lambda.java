@@ -3,7 +3,7 @@ package model;
 import lombok.Getter;
 
 @Getter
-public class Lambda extends Node {
+public class Lambda implements Node {
     private final String formalParam;
     private final Node body;
 
@@ -18,10 +18,6 @@ public class Lambda extends Node {
     }
 
     @Override
-    public Node reduceByName() {
-        return this;
-    }
-
     public Node replaceOcc(String name, Node arg) {
         if (!name.equals(formalParam)) { // name - capturing
             return new Lambda(formalParam, body.replaceOcc(name, arg));

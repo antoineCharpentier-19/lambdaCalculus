@@ -2,20 +2,24 @@ package model;
 
 import util.NodeUpdateObserver;
 
-public abstract class Node {
+public interface Node {
 
-    public abstract Node reduceByName();
+    default Node reduceByName() {
+        return this;
+    }
 
-    public Node debugReduceByName() {
+    default Node debugReduceByName() {
         System.out.println(this);
         return debugReduceByName(newVal -> System.out.println(newVal.toString()));
     }
 
-    protected Node debugReduceByName(NodeUpdateObserver notifier) {
+    default Node debugReduceByName(NodeUpdateObserver notifier) {
         return reduceByName(); // default implementation : nothing :)
-    };
+    }
 
-    public abstract Node replaceOcc(String name, Node arg);
+    default Node replaceOcc(String name, Node arg) {
+        return this;
+    }
 
-    public abstract String toString();
+    String toString();
 }

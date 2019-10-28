@@ -2,7 +2,7 @@ package model;
 
 import java.util.Objects;
 
-public class BoolConstant extends Node {
+public class BoolConstant implements Node {
     private boolean value;
 
     public BoolConstant(boolean value) {
@@ -25,13 +25,6 @@ public class BoolConstant extends Node {
     @Override
     public int hashCode() {
         return Objects.hash(getValue());
-    }
-
-    @Override
-    public Node reduceByName() { return this; }
-
-    public Node replaceOcc(String name, Node arg) {
-        return this;
     }
 
     public boolean getValue() {

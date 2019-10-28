@@ -6,7 +6,7 @@ import util.NodeUpdateObserver;
 import java.util.function.BiFunction;
 
 @Data
-public class BinaryOp extends Node {
+public class BinaryOp implements Node {
     private final Node left;
     private final Node right;
     private final Operator op;
@@ -19,7 +19,7 @@ public class BinaryOp extends Node {
 
     public enum Operator {
         PLUS("+", (a, b) -> new IntConstant(((IntConstant) a).getValue() + ((IntConstant) b).getValue())),
-        MINUS("-", (a, b) -> new IntConstant( ((IntConstant) a).getValue() - ((IntConstant) b).getValue())),
+        MINUS("-", (a, b) -> new IntConstant(((IntConstant) a).getValue() - ((IntConstant) b).getValue())),
         TIMES("*", (a, b) -> new IntConstant(((IntConstant) a).getValue() * ((IntConstant) b).getValue())),
         DIVIDE("/", (a, b) -> new IntConstant(((IntConstant) a).getValue() / ((IntConstant) b).getValue())),
         OR("||", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() || ((BoolConstant) b).getValue())),
@@ -40,7 +40,7 @@ public class BinaryOp extends Node {
     public Node reduceByName() {
         Node reducedLeft = left.reduceByName();
         // special cases
-        if (op == Operator.AND && !((BoolConstant)reducedLeft).getValue() || op == Operator.OR && ((BoolConstant)reducedLeft).getValue()) {
+        if (op == Operator.AND && !((BoolConstant) reducedLeft).getValue() || op == Operator.OR && ((BoolConstant) reducedLeft).getValue()) {
             return reducedLeft;
         }
         Node reducedRight = right.reduceByName();
@@ -51,7 +51,7 @@ public class BinaryOp extends Node {
     public Node debugReduceByName(NodeUpdateObserver notifier) {
         Node reducedLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new BinaryOp(op, newVal, right)));
         // special cases
-        if (op == Operator.AND && !((BoolConstant)reducedLeft).getValue() || op == Operator.OR && ((BoolConstant)reducedLeft).getValue()) {
+        if (op == Operator.AND && !((BoolConstant) reducedLeft).getValue() || op == Operator.OR && ((BoolConstant) reducedLeft).getValue()) {
             notifier.onUpdate(reducedLeft);
             return reducedLeft;
         }

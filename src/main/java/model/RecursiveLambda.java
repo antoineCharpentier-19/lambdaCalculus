@@ -6,7 +6,7 @@ import util.NodeUpdateObserver;
 
 @Data
 @AllArgsConstructor
-public class RecursiveLambda extends Node {
+public class RecursiveLambda implements Node {
     private Lambda lambda;
     private String name;
 
@@ -16,18 +16,13 @@ public class RecursiveLambda extends Node {
 
     @Override
     public Node reduceByName() {
-        return lambda.reduceByName();
+        return lambda;
     }
 
     @Override
-    protected Node debugReduceByName(NodeUpdateObserver notifier) {
+    public Node debugReduceByName(NodeUpdateObserver notifier) {
         notifier.onUpdate(lambda);
-        return lambda.debugReduceByName(notifier);
-    }
-
-    @Override
-    public Node replaceOcc(String name, Node arg) {
-        return this;
+        return lambda;
     }
 
     @Override
