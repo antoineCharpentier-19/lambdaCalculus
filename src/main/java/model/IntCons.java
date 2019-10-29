@@ -11,7 +11,14 @@ public class IntCons implements Node, IntList {
 
     @Override
     public String toString(){
-        return "["+head+", "+tail+"]";
+        Node tmp = tail;
+        String result = "[" + head;
+        while(!(tmp instanceof IntNil)){
+            result += ", " + ((IntCons)tmp).getHead();
+            tmp = ((IntCons)tmp).getTail();
+        }
+        result +="]";
+        return result;
     }
 
     public Node replaceOcc(String name, Node arg) {
