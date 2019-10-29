@@ -52,6 +52,7 @@ public class UnOp implements Node {
     public Node debugReduceByName(NodeUpdateObserver notifier) {
         Node result = op.converter.apply(body.debugReduceByName(newVal -> new UnOp(op, newVal)));
         notifier.onUpdate(result);
+        if(result instanceof RecursiveNode) result = ((RecursiveNode) result).getNode();
         return result;
     }
 

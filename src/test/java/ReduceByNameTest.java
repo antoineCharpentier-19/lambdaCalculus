@@ -1,18 +1,20 @@
 import model.*;
 import model.BoolConstant;
-import model.IntConstant;
 import model.Lambda;
 import model.Variable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.HashMap;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static util.Utils.*;
 
 public class ReduceByNameTest {
+
+    private HashMap<String, Node> env = new HashMap<>();
 
     @Test
     public void pureLambdaTest() {
@@ -94,8 +96,8 @@ public class ReduceByNameTest {
 
     @Test
     public void IntTest() {
-        // (\x -> (\y -> ((- 1)-y))) 2 3
-        Node node = multiApply(multiLambda(new String[]{"x", "y"}, new BiOp(new UnOp(UnOp.Op.NEGATIVE, new IntConstant(1)), "-", new Variable("y"))), node(2), node(3));
+        // (\x -> x + (\y -> 1 - y)) 2 3
+        Node node = multiApply(new Lambda("x", new BiOp(node("x"), "+", new Lambda("y", new BiOp(node(1), "-", new Variable("y"))))), node(2), node(3));
         node.debugReduceByName();
 
         System.out.println("--------------------------");
@@ -105,49 +107,75 @@ public class ReduceByNameTest {
         node.debugReduceByName();
     }
 
+    private int factorial(int i) {
+        return i <= 0 ? 1 : i * factorial(i - 1);
+    }
+
     @ParameterizedTest
     @ValueSource(ints = {1, 2, 5})
         // six numbers
     void recursionTest(int number) {
 
-        RecursiveLambda FAC = new RecursiveLambda("FAC");
+        RecursiveNode FAC = new RecursiveNode("FAC");
         Lambda fac = new Lambda("n",
                 new IfThenElse(
                         new BiOp(node("n"), "==", node("0")),
                         node("1"),
                         new BiOp(node("n"), "*", new Application(FAC, new BiOp(node("n"), "-", node("1"))))));
-        FAC.setLambda(fac);
+        FAC.setNode(fac);
 
         Node nodeRecursion = new Application(
                 fac,
                 node(number)
         );
-        nodeRecursion.debugReduceByName();
+        assertEquals(node(factorial(number)), nodeRecursion.debugReduceByName());
     }
 
     @Test
     void listsTest() {
-        RecursiveLambda FOLD = new RecursiveLambda("FOLD");
-        Lambda fold = multiLambda(new String[]{"l", "p", "f"},
+        RecursiveNode FOLDR = new RecursiveNode("FOLD");
+        Lambda foldr = multiLambda(new String[]{"l", "p", "f"},
                 new IfThenElse(
                         new UnOp("nil", node("l")),
                         node("p"),
                         multiApply(
                                 node("f"),
-                                node("p"),
-                                multiApply(FOLD, new UnOp("tail", node("l")), new UnOp("head", node("l")), node("f")))));
+                                new UnOp("head", node("l")),
+                                multiApply(FOLDR,
+                                        new UnOp("tail", node("l")),
+                                        node("p"),
+                                        node("f"))
+                        )));
 
-        FOLD.setLambda(fold);
+        FOLDR.setNode(foldr);
 
-        Node nodeRecursion = multiApply(fold, intList(1, 2, 3), node(0), multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("y"))));
+        Node nodeRecursion = multiApply(foldr, intList(1, 2, 3), node(0), multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("y"))));
 
-        nodeRecursion.debugReduceByName();
+        assertEquals(node(6), nodeRecursion.debugReduceByName());
+
+        env.put("FOLDR", foldr);
+
+        Lambda map = multiLambda(new String[]{"l", "f"},
+                multiApply(FOLDR,
+                        node("l"),
+                        new IntNil(),
+                        multiLambda(new String[]{"x", "y"},
+                                new BiOp(
+                                        new Application(node("f"), node("x")), ":", node("y")))));
+
+        Node test = multiApply(map, intList(3, 2, 1), new Lambda("x", new BiOp(node("x"), "+", node("x"))));
+
+        System.out.println(test.debugReduceByName());
+
     }
 
     @Test
-    public void appTest() {
-        // (\x -> (\y -> (\z -> (x+(y+z))))) 1 2 3
-        System.out.println(multiApply(multiLambda(new String[]{"x", "y", "z"}, new BiOp(node("x"), "+", new BiOp(node("y"), "+", node("z")))), node("1"), node("2"), node("3")));
+    void infiniteListsTest() {
+        RecursiveNode INF_ONE = new RecursiveNode("INF_ONE");
+        Node infOne = new IntCons(new BiOp(node(1), "+", new UnOp("head", INF_ONE)), INF_ONE);
+        INF_ONE.setNode(infOne);
+
+        System.out.println(new UnOp("tail", infOne).debugReduceByName());
     }
 
 }
