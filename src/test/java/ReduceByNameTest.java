@@ -1,3 +1,4 @@
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import model.*;
 import model.BoolConstant;
 import model.IntConstant;
@@ -207,5 +208,4 @@ public class ReduceByNameTest {
         // (\x -> (\y -> (\z -> (x+(y+z))))) 1 2 3
         System.out.println(multiApply(multiLambda(new String[]{"x", "y", "z"}, new BiOp(node("x"), "+", new BiOp(node("y"), "+", node("z")))), node("1"), node("2"), node("3")));
     }
-
 }
