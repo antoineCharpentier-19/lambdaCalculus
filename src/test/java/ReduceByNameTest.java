@@ -2,14 +2,12 @@ import model.*;
 import model.BoolConstant;
 import model.Lambda;
 import model.Variable;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 import static util.Utils.*;
 
 public class ReduceByNameTest {
@@ -111,10 +109,8 @@ public class ReduceByNameTest {
         return i <= 0 ? 1 : i * factorial(i - 1);
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {1, 2, 5})
         // six numbers
-    void recursionTest(int number) {
+    /*void recursionTest(int number) {
 
         RecursiveNode FAC = new RecursiveNode("FAC");
         Lambda fac = new Lambda("n",
@@ -129,10 +125,10 @@ public class ReduceByNameTest {
                 node(number)
         );
         assertEquals(node(factorial(number)), nodeRecursion.debugReduceByName());
-    }
+    }*/
 
     @Test
-    void listsTest() {
+    public void listsTestRight() {
         RecursiveNode FOLDR = new RecursiveNode("FOLD");
         Lambda foldr = multiLambda(new String[]{"l", "p", "f"},
                 new IfThenElse(
@@ -167,14 +163,63 @@ public class ReduceByNameTest {
 
         System.out.println(test.debugReduceByName());
 
+        nodeRecursion.debugReduceByName();
     }
 
     @Test
-    void infiniteListsTest() {
+    public void listsTestLeft() {
+        RecursiveNode FOLD = new RecursiveNode("FOLD");
+        Lambda fold = multiLambda(new String[]{"l", "p", "f"},
+                new IfThenElse(
+                        new UnOp("nil", node("l")),
+                        node("p"),
+                        multiApply(
+                                node("f"),
+                                node("p"),
+                                multiApply(FOLD, new UnOp("tail", node("l")), new UnOp("head", node("l")), node("f")))));
+
+        FOLD.setNode(fold);
+
+        Node nodeRecursion = multiApply(fold, intList(1, 2, 3), node(0), multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("y"))));
+
+        nodeRecursion.debugReduceByName();
+
+        System.out.println("--------------------------");
+
+        RecursiveNode MAP = new RecursiveNode("MAP");
+        Lambda map = multiLambda(
+                new String[]{"l", "f"},
+                new IfThenElse(
+                        new UnOp("nil", node("l")),
+                        new IntNil(),
+                        new IntCons(
+                                new Application(
+                                        node("f"),
+                                        new UnOp("head", node("l"))
+                                ),
+                                multiApply(MAP, new UnOp("tail", node("l")), node("f"))
+                        )
+                )
+        );
+        MAP.setNode(map);
+        Node recursion = multiApply(map, intList(1, 2, 3), new Lambda("x", new BiOp(node("x"), "+", node(1))));
+        recursion.debugReduceByName();
+    }
+
+    @Test
+    public void infiniteListsTest() {
         RecursiveNode INF_ONE = new RecursiveNode("INF_ONE");
         Node infOne = new IntCons(new BiOp(node(1), "+", new UnOp("head", INF_ONE)), INF_ONE);
         INF_ONE.setNode(infOne);
 
+        System.out.println(new UnOp("tail", infOne).debugReduceByName());
+    }
+
+    @Test
+    public void infiniteListsTest2() {
+        RecursiveNode INF_ONE = new RecursiveNode("INF_ONE");
+        Node infOne = new IntCons(new BiOp(node(1), "+", new UnOp("head", INF_ONE)), INF_ONE);
+        INF_ONE.setNode(infOne);
         System.out.println(new UnOp("tail", infOne).debugReduceByName());
     }
 
