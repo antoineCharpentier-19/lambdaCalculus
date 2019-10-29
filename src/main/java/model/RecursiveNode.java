@@ -6,23 +6,23 @@ import util.NodeUpdateObserver;
 
 @Data
 @AllArgsConstructor
-public class RecursiveLambda implements Node {
-    private Lambda lambda;
+public class RecursiveNode implements Node {
+    private Node node;
     private String name;
 
-    public RecursiveLambda(String name) {
+    public RecursiveNode(String name) {
         this.name = name;
     }
 
     @Override
     public Node reduceByName() {
-        return lambda;
+        return node;
     }
 
     @Override
     public Node debugReduceByName(NodeUpdateObserver notifier) {
-        notifier.onUpdate(lambda);
-        return lambda;
+        notifier.onUpdate(node);
+        return node;
     }
 
     @Override
