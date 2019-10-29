@@ -1,3 +1,4 @@
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import model.*;
 import model.BoolConstant;
 import model.IntConstant;
@@ -171,12 +172,12 @@ public class ReduceByNameTest {
         System.out.println(multiApply(multiLambda(new String[]{"x", "y", "z"}, new BiOp(node("x"), "+", new BiOp(node("y"), "+", node("z")))), node("1"), node("2"), node("3")));
     }
 
-    @Test
+    /*@Test
     void infiniteListsTest() {
         RecursiveNode INF_ONE = new RecursiveNode("INF_ONE");
         Node infOne = new IntCons(new BiOp(node(1), "+", new UnOp("head", INF_ONE)), INF_ONE);
         INF_ONE.setNode(infOne);
         System.out.println(new UnOp("tail", infOne).debugReduceByName());
-    }
+    }*/
 
 }
