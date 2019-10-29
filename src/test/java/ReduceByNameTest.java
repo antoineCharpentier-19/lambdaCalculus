@@ -1,4 +1,3 @@
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import model.*;
 import model.BoolConstant;
 import model.IntConstant;
