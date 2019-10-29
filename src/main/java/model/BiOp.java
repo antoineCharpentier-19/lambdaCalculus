@@ -3,7 +3,13 @@ package model;
 import lombok.Data;
 import util.NodeUpdateObserver;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Data
 public class BiOp implements Node {
@@ -24,25 +30,23 @@ public class BiOp implements Node {
         private String stringVal;
         private BiFunction<Node, Node, Node> converter;
 
+        private static final Map<String, Op> BY_CODE_MAP =
+                Collections.unmodifiableMap(Arrays.stream(Op.values()).collect(Collectors.toMap(op -> op.stringVal, Function.identity())));
+
+        public static Op forCode(String code) {
+            return BY_CODE_MAP.get(code);
+        }
+
         Op(String stringVal, BiFunction<Node, Node, Node> converter) {
             this.converter = converter;
             this.stringVal = stringVal;
-        }
-
-        private static Op opFromString(String s) {
-            for (Op o : Op.values()) {
-                if (o.stringVal.equals(s)) {
-                    return o;
-                }
-            }
-            throw new IllegalArgumentException(s + " is not a valid binary operator.");
         }
     }
 
     public BiOp(Node left, String op, Node right) {
         this.left = left;
         this.right = right;
-        this.op = Op.opFromString(op);
+        this.op = Op.forCode(op);
     }
 
     public BiOp(Node left, Op op, Node right) {
