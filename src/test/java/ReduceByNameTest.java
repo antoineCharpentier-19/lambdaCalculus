@@ -49,7 +49,7 @@ public class ReduceByNameTest {
 
     @Test
     public void boolTest() {
-        Function<Boolean, Node> node1 = x -> new Application(new Lambda("x", new UnOp(UnOp.Op.NOT, new Variable("x"))), node("x"));
+        Function<Boolean, Node> node1 = x -> new Application(new Lambda("x", new UnOp(UnOp.Op.NOT, new Variable("x"))), node(x));
         Node applied1 = node1.apply(true);
         System.out.println("--------------------------");
         assertEquals("false", applied1.debugReduceByName().toString());
@@ -94,7 +94,7 @@ public class ReduceByNameTest {
 
     @Test
     public void IntTest() {
-        // (\x -> + x (\y -> - 1 y)) 2 2
+        // (\x -> (\y -> ((- 1)-y))) 2 3
         Node node = multiApply(multiLambda(new String[]{"x", "y"}, new BiOp(new UnOp(UnOp.Op.NEGATIVE, new IntConstant(1)), "-", new Variable("y"))), node(2), node(3));
         node.debugReduceByName();
 
@@ -146,6 +146,7 @@ public class ReduceByNameTest {
 
     @Test
     public void appTest() {
+        // (\x -> (\y -> (\z -> (x+(y+z))))) 1 2 3
         System.out.println(multiApply(multiLambda(new String[]{"x", "y", "z"}, new BiOp(node("x"), "+", new BiOp(node("y"), "+", node("z")))), node("1"), node("2"), node("3")));
     }
 

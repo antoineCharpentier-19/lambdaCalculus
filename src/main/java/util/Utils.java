@@ -1,19 +1,21 @@
 package util;
 
 import model.*;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 
 public class Utils {
     public static Node node(String string) {
-        if(parseableAsInt(string)) {
+        if(StringUtils.isNumeric(string)) {
             return new IntConstant(Integer.parseInt(string));
         } else if (string.equalsIgnoreCase("false") || string.equalsIgnoreCase("true")) {
             return new BoolConstant(Boolean.parseBoolean(string));
         } else return new Variable(string);
     }
 
-    public static Application multiApply(Node left, Node... args) {
+    public static Application multiApply(Node left, Node...args) {
         Node tmpLeft = left;
         Node tmpRight = args[0];
         for (int i = 1; i < args.length; i++) {
@@ -48,14 +50,5 @@ public class Utils {
             output = new IntCons(new IntConstant(i), output);
         }
         return output;
-    }
-
-    public static boolean parseableAsInt(String s) {
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 }
