@@ -1,6 +1,6 @@
 package model;
 
-public class IntNil implements IntList {
+public class Nil implements LCList {
     @Override
     public String toString(){
         return "[]";

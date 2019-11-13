@@ -150,7 +150,7 @@ public class ReduceByNameTest {
         Lambda map = multiLambda(new String[]{"l", "f"},
                 multiApply(FOLDR,
                         node("l"),
-                        new IntNil(),
+                        new Nil(),
                         multiLambda(new String[]{"x", "y"},
                                 new BiOp(
                                         new Application(node("f"), node("x")), ":", node("y")))));
@@ -178,7 +178,7 @@ public class ReduceByNameTest {
 
         Node nodeRecursion = multiApply(fold, intList(1, 2, 3), node(0), multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("y"))));
 
-        nodeRecursion.debugReduceByName();
+//        nodeRecursion.debugReduceByName();
 
         System.out.println("--------------------------");
 
@@ -187,8 +187,8 @@ public class ReduceByNameTest {
                 new String[]{"l", "f"},
                 new IfThenElse(
                         new UnOp("nil", node("l")),
-                        new IntNil(),
-                        new IntCons(
+                        new Nil(),
+                        new Cons(
                                 new Application(
                                         node("f"),
                                         new UnOp("head", node("l"))
@@ -198,13 +198,59 @@ public class ReduceByNameTest {
                 )
         );
         MAP.setNode(map);
-        Node recursion = multiApply(map, intList(1, 2, 3), new Lambda("x", new BiOp(node("x"), "+", node(1))));
-        recursion.debugReduceByName();
+        Node recursion = multiApply(MAP, intList(1, 2, 3), new Lambda("x", new BiOp(node("x"), "+", node(1))));
+//        System.out.println(recursion.debugReduceByName());
+
+        RecursiveNode INF_ONE = new RecursiveNode("INF");
+        Node infOne = new Cons(node(1), INF_ONE);
+        INF_ONE.setNode(infOne);
+
+//        System.out.println(new UnOp("tail", infOne).debugReduceByName());
+//        System.out.println(new UnOp("head", new UnOp("tail", new UnOp("tail", new UnOp("tail", infOne)))).debugReduceByName());
+//
+//        new UnOp("head",
+//                new UnOp("tail",
+//                        new UnOp("tail",
+//                                multiApply(
+//                                        MAP,
+//                                        INF_ONE,
+//                                        new Lambda(
+//                                                "x",
+//                                                new BiOp(node("x"), "+", node(1))
+//                                        )
+//                                )))).debugReduceByName();
+
+        RecursiveNode INF_INTS = new RecursiveNode("INF_INTS");
+        Node intInts = new Cons(node(1),
+                multiApply(
+                        MAP, INF_INTS, new Lambda(
+                                "x",
+                                new BiOp(node("x"), "+", node(1))
+                        )));
+        INF_INTS.setNode(intInts);
+
+        new UnOp("head", new UnOp("tail", new UnOp("tail", INF_INTS))).debugReduceByName();
     }
 
     @Test
-    public void appTest() {
-        // (\x -> (\y -> (\z -> (x+(y+z))))) 1 2 3
-        System.out.println(multiApply(multiLambda(new String[]{"x", "y", "z"}, new BiOp(node("x"), "+", new BiOp(node("y"), "+", node("z")))), node("1"), node("2"), node("3")));
+    public void booleanListTest() {
+        RecursiveNode MAP = new RecursiveNode("MAP");
+        Lambda map = multiLambda(
+                new String[]{"l", "f"},
+                new IfThenElse(
+                        new UnOp("nil", node("l")),
+                        new Nil(),
+                        new Cons(
+                                new Application(
+                                        node("f"),
+                                        new UnOp("head", node("l"))
+                                ),
+                                multiApply(MAP, new UnOp("tail", node("l")), node("f"))
+                        )
+                )
+        );
+        MAP.setNode(map);
+        Node recursion = multiApply(MAP, boolList(true, false, false), new Lambda("x", new UnOp("not", node("x"))));
+        recursion.debugReduceByName();
     }
 }

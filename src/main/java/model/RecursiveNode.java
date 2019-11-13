@@ -22,7 +22,7 @@ public class RecursiveNode implements Node {
     @Override
     public Node debugReduceByName(NodeUpdateObserver notifier) {
         notifier.onUpdate(node);
-        return node;
+        return node.debugReduceByName(notifier);
     }
 
     @Override

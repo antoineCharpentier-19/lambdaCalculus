@@ -11,9 +11,9 @@ public class UnOp implements Node {
     public enum Op {
         NOT("not", a -> new BoolConstant(!((BoolConstant) a).getValue())),
         NEGATIVE("-", a -> new IntConstant(-((IntConstant) a).getValue())),
-        NIL("nil", a->new BoolConstant(a instanceof IntNil)),
-        HEAD("head", a->((IntCons) a).getHead()),
-        TAIL("tail", a->((IntCons) a).getTail());
+        NIL("nil", a->new BoolConstant(a instanceof Nil)),
+        HEAD("head", a->((Cons) a).getHead()),
+        TAIL("tail", a->((Cons) a).getTail());
         private String stringVal;
         private  Function<Node, Node> converter;
 
@@ -50,7 +50,12 @@ public class UnOp implements Node {
     }
 
     public Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node result = op.converter.apply(body.debugReduceByName(newVal -> new UnOp(op, newVal)));
+        Node reducedBody = body.debugReduceByName(newVal -> new UnOp(op, newVal));
+        if(op == Op.TAIL || op == Op.HEAD) {
+            while(!(reducedBody instanceof Cons))
+                reducedBody = reducedBody.debugReduceByName(newVal -> new UnOp(op, newVal));
+        }
+        Node result = op.converter.apply(reducedBody);
         notifier.onUpdate(result);
         if(result instanceof RecursiveNode) result = ((RecursiveNode) result).getNode();
         return result;

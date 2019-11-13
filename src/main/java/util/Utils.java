@@ -2,9 +2,9 @@ package util;
 
 import model.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class Utils {
     public static Node node(String string) {
@@ -44,10 +44,18 @@ public class Utils {
         return new BoolConstant(val);
     }
 
-    public static Node intList(int ... ints){
-        Node output = new IntNil();
-        for(Integer i : ints) {
-            output = new IntCons(new IntConstant(i), output);
+    public static Node intList(int... ints){
+        Node output = new Nil();
+        for(int i = ints.length - 1 ; i >= 0 ; i--) {
+            output = new Cons(new IntConstant(ints[i]), output);
+        }
+        return output;
+    }
+
+    public static Node boolList(boolean... bools){
+        Node output = new Nil();
+        for(int i = bools.length - 1 ; i >= 0 ; i--) {
+            output = new Cons(new BoolConstant(bools[i]), output);
         }
         return output;
     }

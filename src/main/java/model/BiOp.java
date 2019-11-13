@@ -5,7 +5,6 @@ import util.NodeUpdateObserver;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -26,7 +25,7 @@ public class BiOp implements Node {
         AND("&&", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() && ((BoolConstant) b).getValue())),
         XOR("xor", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() != ((BoolConstant) b).getValue())),
         EQUAL("==", (a, b) -> new BoolConstant(a.equals(b))),
-        CONS(":", (a, b) -> new IntCons((IntConstant) a, (IntList) b)),
+        CONS(":", (a, b) -> new Cons((IntConstant) a, (LCList) b)),
         ;
         private String stringVal;
         private BiFunction<Node, Node, Node> converter;
