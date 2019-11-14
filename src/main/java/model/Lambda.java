@@ -13,8 +13,8 @@ public class Lambda implements Node {
     }
 
     @Override
-    public String toString() {
-        return "(\\" + formalParam + " -> " + body.toString() + ")";
+    public String toString(boolean topLevel) {
+        return "(\\" + formalParam + " -> " + body.toString(topLevel) + ")";
     }
 
     @Override

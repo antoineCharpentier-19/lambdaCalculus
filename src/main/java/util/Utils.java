@@ -7,11 +7,14 @@ import java.util.Arrays;
 import java.util.Collections;
 
 public class Utils {
+    private static BoolConstant f = new BoolConstant(false);
+    private static BoolConstant t = new BoolConstant(true);
+
     public static Node node(String string) {
         if(StringUtils.isNumeric(string)) {
             return new IntConstant(Integer.parseInt(string));
         } else if (string.equalsIgnoreCase("false") || string.equalsIgnoreCase("true")) {
-            return new BoolConstant(Boolean.parseBoolean(string));
+            return Boolean.parseBoolean(string) ? t : f;
         } else return new Variable(string);
     }
 

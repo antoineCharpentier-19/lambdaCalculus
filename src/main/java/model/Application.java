@@ -14,21 +14,18 @@ public class Application implements Node {
     }
 
     @Override
-    public String toString() {
-        return left.toString() + " " + right.toString();
+    public String toString(boolean topLevel) {
+        return left.toString(topLevel) + "(" + right.toString(topLevel) + ")";
     }
 
     @Override
-    public Node reduceByName() { // TODO : add interface for reduced types
-        return ((Lambda) left.reduceByName()).betaReduce(right).reduceByName();
-    }
-
-    @Override
-    public Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node leftReduced = left.debugReduceByName(newVal -> notifier.onUpdate(new Application(newVal, right)));
-        Node betaReduced = ((Lambda) leftReduced).betaReduce(right);
-        notifier.onUpdate(betaReduced);
-        return betaReduced.debugReduceByName(notifier);
+    public Node reduceByName(NodeUpdateObserver n) {
+        if(n != null) {
+            Node leftReduced = left.reduceByName(newVal -> n.onUpdate(new Application(newVal, right)));
+            Node betaReduced = ((Lambda) leftReduced).betaReduce(right);
+            n.onUpdate(betaReduced);
+            return betaReduced.reduceByName(n);
+        } else return ((Lambda) left.reduceByName(null)).betaReduce(right).reduceByName(null);
     }
 
     public Node replaceOcc(String name, Node arg) {

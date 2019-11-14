@@ -41,22 +41,18 @@ public class UnOp implements Node {
     }
 
     @Override
-    public String toString() {
-        return "(" + op.stringVal + " " + body.toString() + ")";
+    public String toString(boolean topLevel) {
+        return  op.stringVal + " " + body.toString(topLevel);
     }
 
-    public Node reduceByName() {
-        return op.converter.apply(body.reduceByName());
-    }
-
-    public Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node reducedBody = body.debugReduceByName(newVal -> new UnOp(op, newVal));
+    public Node reduceByName(NodeUpdateObserver n) {
+        Node reducedBody = body.reduceByName(newVal -> {if(n!=null) n.onUpdate(new UnOp(op, newVal));});
         if(op == Op.TAIL || op == Op.HEAD) {
             while(!(reducedBody instanceof Cons))
-                reducedBody = reducedBody.debugReduceByName(newVal -> new UnOp(op, newVal));
+                reducedBody = reducedBody.reduceByName(newVal -> {if(n!=null) n.onUpdate(new UnOp(op, newVal));});
         }
         Node result = op.converter.apply(reducedBody);
-        notifier.onUpdate(result);
+        if(n!=null)n.onUpdate(result);
         if(result instanceof RecursiveNode) result = ((RecursiveNode) result).getNode();
         return result;
     }

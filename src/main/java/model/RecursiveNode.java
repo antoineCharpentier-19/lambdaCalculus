@@ -15,18 +15,13 @@ public class RecursiveNode implements Node {
     }
 
     @Override
-    public Node reduceByName() {
-        return node;
+    public Node reduceByName(NodeUpdateObserver n) {
+        if(n!=null) n.onUpdate(node);
+        return node.reduceByName(n);
     }
 
     @Override
-    public Node debugReduceByName(NodeUpdateObserver notifier) {
-        notifier.onUpdate(node);
-        return node.debugReduceByName(notifier);
-    }
-
-    @Override
-    public String toString() {
+    public String toString(boolean topLevel) {
         return name;
     }
 }

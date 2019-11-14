@@ -56,27 +56,16 @@ public class BiOp implements Node {
     }
 
     @Override
-    public Node reduceByName() {
-        Node reducedLeft = left.reduceByName();
+    public Node reduceByName(NodeUpdateObserver n) {
+        Node reducedLeft = left.reduceByName(newVal -> {if(n != null) n.onUpdate(new BiOp(newVal, op, right));});
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
+            if(n != null) n.onUpdate(reducedLeft);
             return reducedLeft;
         }
-        Node reducedRight = right.reduceByName();
-        return op.converter.apply(reducedLeft, reducedRight);
-    }
-
-    @Override
-    public Node debugReduceByName(NodeUpdateObserver notifier) {
-        Node reducedLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new BiOp(newVal, op, right)));
-        // special cases
-        if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
-            notifier.onUpdate(reducedLeft);
-            return reducedLeft;
-        }
-        Node reducedRight = right.debugReduceByName(newVal -> notifier.onUpdate(new BiOp(reducedLeft, op, newVal)));
+        Node reducedRight = right.reduceByName(newVal -> {if(n != null) n.onUpdate(new BiOp(reducedLeft, op, newVal));});
         Node result = op.converter.apply(reducedLeft, reducedRight);
-        notifier.onUpdate(result);
+        if(n != null) n.onUpdate(result);
         return result;
     }
 
@@ -85,8 +74,8 @@ public class BiOp implements Node {
         return new BiOp(left.replaceOcc(name, arg), op, right.replaceOcc(name, arg));
     }
 
-    public String toString() {
-        return "(" + left.toString() + op.stringVal + right.toString() + ")";
+    public String toString(boolean topLevel) {
+        return left.toString(topLevel) + op.stringVal + right.toString(topLevel) ;
     }
 
 }
