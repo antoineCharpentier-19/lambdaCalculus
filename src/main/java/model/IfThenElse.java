@@ -16,26 +16,21 @@ public class IfThenElse implements Node {
     }
 
     @Override
-    public String toString() {
-        return "if (" + cond.toString() + ") then " + left.toString() + " else " + right.toString();
+    public String toString(boolean topLevel) {
+        return "if (" + cond.toString(topLevel) + ") then " + left.toString(topLevel) + " else " + right.toString(topLevel);
     }
 
     @Override
-    public Node reduceByName() {
-        return ((BoolConstant) cond.reduceByName()).getValue() ? left.reduceByName() : right.reduceByName();
-    }
-
-    @Override
-    public Node debugReduceByName(NodeUpdateObserver notifier) {
-        BoolConstant newCond = (BoolConstant) cond.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newVal, left, right)));
-        Node newLeft = left.debugReduceByName(newVal -> notifier.onUpdate(new IfThenElse(newCond, newVal, right)));
+    public Node reduceByName(NodeUpdateObserver n) {
+        BoolConstant newCond = (BoolConstant) cond.reduceByName(newVal -> {if(n!=null) n.onUpdate(new IfThenElse(newVal, left, right));});
+        Node newLeft = left.reduceByName(newVal -> {if(n!=null) n.onUpdate(new IfThenElse(newCond, newVal, right));});
         Node result;
         if (newCond.getValue()) {
-            notifier.onUpdate(newLeft);
+            if(n!=null) n.onUpdate(newLeft);
             result = newLeft;
         } else {
-            notifier.onUpdate(right);
-            result = right.debugReduceByName(notifier);
+            if(n!=null) n.onUpdate(right);
+            result = right.reduceByName(n);
         }
         return result;
     }

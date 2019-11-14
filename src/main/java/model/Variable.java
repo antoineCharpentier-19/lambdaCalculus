@@ -11,7 +11,7 @@ public class Variable implements Node {
     }
 
     @Override
-    public String toString() {
+    public String toString(boolean topLevel) {
         return name;
     }
 

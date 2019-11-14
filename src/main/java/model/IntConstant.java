@@ -14,7 +14,7 @@ public class IntConstant implements Node {
     }
 
     @Override
-    public String toString() {
+    public String toString(boolean topLevel) {
         return Integer.toString(value);
     }
 
