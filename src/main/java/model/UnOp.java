@@ -47,6 +47,7 @@ public class UnOp implements Node {
         return op.stringVal + " (" + body.toString(topLevel) + ")";
     }
 
+    @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
         Optional<NodeUpdateObserver> nodeUpdateObserver = observer.map(obs -> newVal -> obs.onUpdate(new UnOp(op, newVal)));
         Node reducedBody = body.reduceByName(nodeUpdateObserver);
@@ -54,9 +55,21 @@ public class UnOp implements Node {
             while (!(reducedBody instanceof Cons))
                 reducedBody = reducedBody.reduceByName(nodeUpdateObserver);
         }
-        final Node result = op.converter.apply(reducedBody);
+        Node result = op.converter.apply(reducedBody);
         observer.ifPresent(obs -> obs.onUpdate(result));
-        if (result instanceof RecursiveNode) return ((RecursiveNode) result).getNode();
+        return result;
+    }
+
+    @Override
+    public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
+        Optional<NodeUpdateObserver> nodeUpdateObserver = observer.map(obs -> newVal -> obs.onUpdate(new UnOp(op, newVal)));
+        Node reducedBody = body.reduceByValue(nodeUpdateObserver);
+        if (op == Op.TAIL || op == Op.HEAD) {
+            while (!(reducedBody instanceof Cons))
+                reducedBody = reducedBody.reduceByValue(nodeUpdateObserver);
+        }
+        Node result = op.converter.apply(reducedBody);
+        observer.ifPresent(obs -> obs.onUpdate(result));
         return result;
     }
 

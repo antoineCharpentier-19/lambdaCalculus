@@ -19,7 +19,7 @@ public class ReduceByNameTest {
 
         // (\x -> x ) (\y -> y )
         System.out.println("--------------------------");
-        assertEquals("(\\y -> y)", node.reduceByName().print());
+        assertEquals("(\\y -> y)", node.reduceByName(true).print());
 
         // (\x -> (\y -> x) a) b
         node = new Application(
@@ -30,7 +30,7 @@ public class ReduceByNameTest {
                                 node("a"))),
                 node("b"));
         System.out.println("--------------------------");
-        assertEquals("b", node.reduceByName().print());
+        assertEquals("b", node.reduceByName(true).print());
 
         // (\x -> (\y -> x)) b a
         node = new Application(
@@ -40,7 +40,7 @@ public class ReduceByNameTest {
                 new Variable("a")
         );
         System.out.println("--------------------------");
-        node.reduceByName();
+        assertEquals("b", node.reduceByName(true).print());
     }
 
     @Test
@@ -48,17 +48,17 @@ public class ReduceByNameTest {
         Function<Boolean, Node> node1 = x -> new Application(new Lambda("x", new UnOp(UnOp.Op.NOT, new Variable("x"))), node(x));
         Node applied1 = node1.apply(true);
         System.out.println("--------------------------");
-        assertEquals("false", applied1.reduceByName().print());
+        assertEquals("false", applied1.reduceByName(true).print());
         Function<Boolean, Node> ifThenElse1 = x -> new IfThenElse(
                 new BoolConstant(x.booleanValue()),
                 node(false),
                 node(true));
         Node applied2True = ifThenElse1.apply(true);
         System.out.println("--------------------------");
-        assertEquals("false", applied2True.reduceByName().print());
+        assertEquals("false", applied2True.reduceByName(true).print());
         Node applied2False = ifThenElse1.apply(false);
         System.out.println("--------------------------");
-        assertEquals("true", applied2False.reduceByName().print());
+        assertEquals("true", applied2False.reduceByName(true).print());
         Function<Boolean, Node> ifThenElse2 = x -> new IfThenElse(
                 node1.apply(x),
                 node(false),
@@ -66,10 +66,10 @@ public class ReduceByNameTest {
         );
         Node applied3True = ifThenElse2.apply(true);
         System.out.println("--------------------------");
-        assertEquals("true", applied3True.reduceByName().print());
+        assertEquals("true", applied3True.reduceByName(true).print());
         Node applied3False = ifThenElse2.apply(false);
         System.out.println("--------------------------");
-        assertEquals("false", applied3False.reduceByName().print());
+        assertEquals("false", applied3False.reduceByName(true).print());
 
         // ((true && true) && (true && true))
         System.out.println("--------------------------");
@@ -78,27 +78,27 @@ public class ReduceByNameTest {
                 "&&",
                 new BiOp(node(true), "&&", node(true))
         );
-        andAndAndAnd.reduceByName();
+        assertEquals("true", andAndAndAnd.reduceByName(true).print());
 
         System.out.println("--------------------------");
         Node or = new BiOp(
                 new BiOp(node(true), "||", node(false)),
                 "||",
                 new BiOp(node(false), "||", node(false)));
-        or.reduceByName();
+        assertEquals("true", or.reduceByName(true).print());
     }
 
     @Test
     public void IntTest() {
         // (\x -> (\y -> ((- 1)-y))) 2 3
         Node node = multiApply(multiLambda(new String[]{"x", "y"}, new BiOp(new UnOp(UnOp.Op.NEGATIVE, new IntConstant(1)), "-", new Variable("y"))), node(2), node(3));
-        node.reduceByName();
+        assertEquals("-4", node.reduceByName(true).print());
 
         System.out.println("--------------------------");
         // 8/4 + 1x3
         node = new BiOp(new BiOp(node(8), "/", node(4)), "+", new BiOp(node(1), "*", node(3))
         );
-        node.reduceByName();
+        assertEquals("5", node.reduceByName(true).print());
     }
 
     @ParameterizedTest
@@ -118,7 +118,12 @@ public class ReduceByNameTest {
                 fac,
                 node(number)
         );
-        nodeRecursion.reduceByName();
+        assertEquals(Integer.toString(factorial(number)), nodeRecursion.reduceByName(true).print());
+    }
+
+    private int factorial(int n) {
+        if (n == 0) return 1;
+        else return (n * factorial(n - 1));
     }
 
     @Test
@@ -141,7 +146,9 @@ public class ReduceByNameTest {
 
         Node nodeRecursion = multiApply(foldr, intList(1, 2, 3), node(0), multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("y"))));
 
-        assertEquals(node(6), nodeRecursion.reduceByName());
+        assertEquals(node(6), nodeRecursion.reduceByName(true));
+
+        System.out.println("--------------------------");
 
         Lambda map = multiLambda(new String[]{"l", "f"},
                 multiApply(FOLDR,
@@ -153,9 +160,9 @@ public class ReduceByNameTest {
 
         Node test = multiApply(map, intList(3, 2, 1), new Lambda("x", new BiOp(node("x"), "+", node("x"))));
 
-        System.out.println(test.reduceByName());
+        assertEquals("((\\x -> x+x)(head ((3 : 2 : 1 : []))) : FOLD(tail ((3 : 2 : 1 : [])))([])((\\x -> (\\y -> ((\\x -> x+x)(x) : y)))))", test.reduceByName(true).print());
+        assertEquals("(6 : 4 : 2 : [])", test.reduceByName(true).toString(true));
 
-        nodeRecursion.reduceByName();
     }
 
     @Test
@@ -174,7 +181,7 @@ public class ReduceByNameTest {
 
         Node nodeRecursion = multiApply(fold, intList(1, 2, 3), node(0), multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("y"))));
 
-//        nodeRecursion.reduceByName();
+        assertEquals("6", nodeRecursion.reduceByName(true).print());
 
         System.out.println("--------------------------");
 
@@ -195,14 +202,20 @@ public class ReduceByNameTest {
         );
         MAP.setNode(map);
         Node recursion = multiApply(MAP, intList(1, 2, 3), new Lambda("x", new BiOp(node("x"), "+", node(1))));
-        System.out.println(recursion.reduceByName().toString(true));
+
+        assertEquals("(2 : 3 : 4 : [])", recursion.reduceByName(true).toString(true));
+        System.out.println("--------------------------");
+        assertEquals("((\\x -> x+1)(head ((1 : 2 : 3 : []))) : MAP(tail ((1 : 2 : 3 : [])))((\\x -> x+1)))", recursion.reduceByName(true).print());
+        System.out.println("--------------------------");
 
         RecursiveNode INF_ONE = new RecursiveNode("INF");
         Node infOne = new Cons(node(1), INF_ONE);
         INF_ONE.setNode(infOne);
 
-        System.out.println(new UnOp("tail", infOne).reduceByName());
-        System.out.println(new UnOp("head", new UnOp("tail", new UnOp("tail", new UnOp("tail", infOne)))).reduceByName());
+        assertEquals("(1 : INF)", new UnOp("tail", infOne).reduceByName(true).print());
+        System.out.println("--------------------------");
+        assertEquals("1", new UnOp("head", new UnOp("tail", new UnOp("tail", new UnOp("tail", infOne)))).reduceByName(true).print());
+        System.out.println("--------------------------");
 
         new UnOp("head",
                 new UnOp("tail",
@@ -214,7 +227,7 @@ public class ReduceByNameTest {
                                                 "x",
                                                 new BiOp(node("x"), "+", node(1))
                                         )
-                                )))).reduceByName();
+                                )))).reduceByName(true);
 
         RecursiveNode INF_INTS = new RecursiveNode("INF_INTS");
         Node intInts = new Cons(node(1),
@@ -225,7 +238,7 @@ public class ReduceByNameTest {
                         )));
         INF_INTS.setNode(intInts);
 
-        new UnOp("head", new UnOp("tail", new UnOp("tail", INF_INTS))).reduceByName();
+        new UnOp("head", new UnOp("tail", new UnOp("tail", INF_INTS))).reduceByName(true).print();
     }
 
     @Test
@@ -247,12 +260,16 @@ public class ReduceByNameTest {
         );
         MAP.setNode(map);
         Node recursion = multiApply(MAP, boolList(true, false, false), new Lambda("x", new UnOp("not", node("x"))));
-        System.out.println(recursion.reduceByName().toString(true));
+
+        assertEquals("((\\x -> not (x))(head ((true : false : false : []))) : MAP(tail ((true : false : false : [])))((\\x -> not (x))))", recursion.reduceByName(true).print());
+        System.out.println("--------------------------");
+        assertEquals("(false : true : true : [])", recursion.reduceByName(true).toString(true));
+        System.out.println("--------------------------");
     }
 
     @Test
     public void printerTest() {
-        Node list = new Cons(new BiOp(node(1), "+", node(2)),new BiOp(node(3), "+", node(4)));
-        System.out.println(list.reduceByName(false).print());
+        Node list = new Cons(new BiOp(node(1), "+", node(2)), new BiOp(node(3), "+", node(4)));
+        System.out.println(list.reduceByName(true).print());
     }
 }
