@@ -15,7 +15,8 @@ public class ReduceByValueTest {
 
         // (\x -> x ) (\y -> y )
         System.out.println("--------------------------");
-        assertEquals("(\\y -> y)", node.reduceByValue().toString(true));
+        assertEquals("(\\y -> y)", node.reduceByValue().toString(false));
+
 
         // (\x -> (\y -> x) a) b
         node = new Application(
@@ -26,16 +27,17 @@ public class ReduceByValueTest {
                                 node("a"))),
                 node("b"));
         System.out.println("--------------------------");
-        assertEquals("b", node.reduceByValue().toString(true));
+        assertEquals("b", node.reduceByValue().toString(false));
 
         // (\x -> (\y -> x)) b a
-        /*node = new Application(
+        node = new Application(
                 new Application(
                         new Lambda("x", new Lambda("y", new Variable("x"))),
                         new Variable("b")),
                 new Variable("a")
         );
         System.out.println("--------------------------");
-        node.reduceByValue();*/
+        node.reduceByValue();
     }
 }
+

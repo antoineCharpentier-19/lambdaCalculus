@@ -22,15 +22,17 @@ public class Application implements Node {
 
     @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
-        return ((Lambda) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))))
-                        .betaReduce(right)
-                        .reduceByName(observer);
+        Node betaReduced = ((Lambda) left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))))).betaReduce(right);
+        observer.ifPresent(o -> o.onUpdate(betaReduced));
+        return betaReduced.reduceByValue(observer);
     }
 
     @Override
     public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
         Lambda l = ((Lambda) left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))));
-        return l.betaReduce(right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(l, newVal)))));
+        Node betaReduced = l.betaReduce(right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(l, newVal)))));
+        observer.ifPresent(o -> o.onUpdate(betaReduced));
+        return betaReduced.reduceByValue(observer);
     }
 
     public Node replaceOcc(String name, Node arg) {
