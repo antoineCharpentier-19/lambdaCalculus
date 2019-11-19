@@ -27,6 +27,12 @@ public class Application implements Node {
                         .reduceByName(observer);
     }
 
+    @Override
+    public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
+        Lambda l = ((Lambda) left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))));
+        return l.betaReduce(right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(l, newVal)))));
+    }
+
     public Node replaceOcc(String name, Node arg) {
         return new Application(left.replaceOcc(name, arg), right.replaceOcc(name, arg));
     }

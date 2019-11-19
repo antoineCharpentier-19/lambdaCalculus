@@ -11,13 +11,27 @@ public interface Node {
         return reduceByName(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
     }
 
-    default Node reduceByName(Optional<NodeUpdateObserver> n) {
+    default Node reduceByName(Optional<NodeUpdateObserver> observer) {
         return this;
     }
 
     //helper
     default Node reduceByName() {
         return reduceByName(true);
+    }
+
+    default Node reduceByValue(boolean print) {
+        if (print) System.out.println(this.toString(false));
+        return reduceByValue(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
+    }
+
+    default Node reduceByValue(Optional<NodeUpdateObserver> n) {
+        return this;
+    }
+
+    //helper
+    default Node reduceByValue() {
+        return reduceByValue(true);
     }
 
     default Node replaceOcc(String name, Node arg) {
