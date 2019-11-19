@@ -3,6 +3,8 @@ package model;
 import lombok.Getter;
 import util.NodeUpdateObserver;
 
+import java.util.Optional;
+
 @Getter
 public class IfThenElse implements Node {
     private final Node cond;
@@ -21,18 +23,16 @@ public class IfThenElse implements Node {
     }
 
     @Override
-    public Node reduceByName(NodeUpdateObserver n) {
-        BoolConstant newCond = (BoolConstant) cond.reduceByName(newVal -> {if(n!=null) n.onUpdate(new IfThenElse(newVal, left, right));});
-        Node newLeft = left.reduceByName(newVal -> {if(n!=null) n.onUpdate(new IfThenElse(newCond, newVal, right));});
-        Node result;
+    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
+        BoolConstant newCond = (BoolConstant) cond.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new IfThenElse(newVal, left, right))));
+        Node newLeft = left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new IfThenElse(newCond, newVal, right))));
         if (newCond.getValue()) {
-            if(n!=null) n.onUpdate(newLeft);
-            result = newLeft;
+            observer.ifPresent(obs -> obs.onUpdate(newLeft));
+            return newLeft;
         } else {
-            if(n!=null) n.onUpdate(right);
-            result = right.reduceByName(n);
+            observer.ifPresent(obs -> obs.onUpdate(right));
+            return right.reduceByName(observer);
         }
-        return result;
     }
 
     public Node replaceOcc(String name, Node arg) {

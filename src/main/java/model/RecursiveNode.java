@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import util.NodeUpdateObserver;
 
+import java.util.Optional;
+
 @Data
 @AllArgsConstructor
 public class RecursiveNode implements Node {
@@ -15,9 +17,9 @@ public class RecursiveNode implements Node {
     }
 
     @Override
-    public Node reduceByName(NodeUpdateObserver n) {
-        if(n!=null) n.onUpdate(node);
-        return node.reduceByName(n);
+    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
+        observer.ifPresent(obs -> obs.onUpdate(node));
+        return node.reduceByName(observer);
     }
 
     @Override

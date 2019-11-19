@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import util.NodeUpdateObserver;
 
+import java.util.Optional;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,14 +20,14 @@ public class Cons implements LCList {
         Node tmpHead = head;
         Node tmpTail = tail;
         if(topLevel) {
-            tmpHead = head.reduceByName(null);
-            tmpTail = tail.reduceByName(null);
+            tmpHead = head.reduceByName(Optional.empty());
+            tmpTail = tail.reduceByName(Optional.empty());
         }
         String result = "(" + tmpHead.toString(topLevel);
         while(tmpTail instanceof Cons){
-            result += " : " + (topLevel ? ((Cons) tmpTail).getHead().reduceByName(null) : ((Cons) tmpTail).getHead()).toString(false);
+            result += " : " + (topLevel ? ((Cons) tmpTail).getHead().reduceByName(Optional.empty()) : ((Cons) tmpTail).getHead()).toString(false);
             tmpTail = ((Cons) tmpTail).getTail();
-            if(topLevel) tmpTail = tmpTail.reduceByName(null);
+            if(topLevel) tmpTail = tmpTail.reduceByName(Optional.empty());
         }
         result += " : " + tmpTail.toString(false) + ")";
         return result;

@@ -6,6 +6,7 @@ import util.NodeUpdateObserver;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -56,16 +57,16 @@ public class BiOp implements Node {
     }
 
     @Override
-    public Node reduceByName(NodeUpdateObserver n) {
-        Node reducedLeft = left.reduceByName(newVal -> {if(n != null) n.onUpdate(new BiOp(newVal, op, right));});
+    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
+        Node reducedLeft = left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
-            if(n != null) n.onUpdate(reducedLeft);
+            observer.ifPresent(obs -> obs.onUpdate(reducedLeft));
             return reducedLeft;
         }
-        Node reducedRight = right.reduceByName(newVal -> {if(n != null) n.onUpdate(new BiOp(reducedLeft, op, newVal));});
+        Node reducedRight = right.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(reducedLeft, op, newVal))));
         Node result = op.converter.apply(reducedLeft, reducedRight);
-        if(n != null) n.onUpdate(result);
+        observer.ifPresent(obs -> obs.onUpdate(result));
         return result;
     }
 

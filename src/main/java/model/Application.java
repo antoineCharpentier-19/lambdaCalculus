@@ -3,6 +3,8 @@ package model;
 import lombok.Getter;
 import util.NodeUpdateObserver;
 
+import java.util.Optional;
+
 @Getter
 public class Application implements Node {
     private final Node left;
@@ -19,13 +21,10 @@ public class Application implements Node {
     }
 
     @Override
-    public Node reduceByName(NodeUpdateObserver n) {
-        if(n != null) {
-            Node leftReduced = left.reduceByName(newVal -> n.onUpdate(new Application(newVal, right)));
-            Node betaReduced = ((Lambda) leftReduced).betaReduce(right);
-            n.onUpdate(betaReduced);
-            return betaReduced.reduceByName(n);
-        } else return ((Lambda) left.reduceByName(null)).betaReduce(right).reduceByName(null);
+    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
+        return ((Lambda) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))))
+                        .betaReduce(right)
+                        .reduceByName(observer);
     }
 
     public Node replaceOcc(String name, Node arg) {
