@@ -22,9 +22,9 @@ public class Application implements Node {
 
     @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
-        Node betaReduced = ((Lambda) left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))))).betaReduce(right);
+        Node betaReduced = ((Lambda) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))))).betaReduce(right);
         observer.ifPresent(o -> o.onUpdate(betaReduced));
-        return betaReduced.reduceByValue(observer);
+        return betaReduced.reduceByName(observer);
     }
 
     @Override
