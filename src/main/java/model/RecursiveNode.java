@@ -23,6 +23,12 @@ public class RecursiveNode implements Node {
     }
 
     @Override
+    public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
+        observer.ifPresent(obs -> obs.onUpdate(node));
+        return node.reduceByValue(observer);
+    }
+
+    @Override
     public String toString(boolean topLevel) {
         return name;
     }

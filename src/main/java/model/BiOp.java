@@ -71,6 +71,20 @@ public class BiOp implements Node {
     }
 
     @Override
+    public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
+        Node reducedLeft = left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        // special cases
+        if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
+            observer.ifPresent(obs -> obs.onUpdate(reducedLeft));
+            return reducedLeft;
+        }
+        Node reducedRight = right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(reducedLeft, op, newVal))));
+        Node result = op.converter.apply(reducedLeft, reducedRight);
+        observer.ifPresent(obs -> obs.onUpdate(result));
+        return result;
+    }
+
+    @Override
     public Node replaceOcc(String name, Node arg) {
         return new BiOp(left.replaceOcc(name, arg), op, right.replaceOcc(name, arg));
     }

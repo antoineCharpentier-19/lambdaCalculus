@@ -35,6 +35,19 @@ public class IfThenElse implements Node {
         }
     }
 
+    @Override
+    public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
+        BoolConstant newCond = (BoolConstant) cond.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new IfThenElse(newVal, left, right))));
+        Node newLeft = left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new IfThenElse(newCond, newVal, right))));
+        if (newCond.getValue()) {
+            observer.ifPresent(obs -> obs.onUpdate(newLeft));
+            return newLeft;
+        } else {
+            observer.ifPresent(obs -> obs.onUpdate(right));
+            return right.reduceByValue(observer);
+        }
+    }
+
     public Node replaceOcc(String name, Node arg) {
         return new IfThenElse(
                 cond.replaceOcc(name, arg),
