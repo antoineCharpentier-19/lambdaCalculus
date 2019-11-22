@@ -2,7 +2,7 @@ package model;
 
 import java.util.Objects;
 
-public class BoolConstant implements Node {
+public class BoolConstant implements Node, IrreductibleNode {
     private boolean value;
 
     public static final BoolConstant f = new BoolConstant(false);

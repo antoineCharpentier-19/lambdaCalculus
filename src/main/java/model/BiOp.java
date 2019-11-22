@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Data
-public class BiOp implements Node {
+public class BiOp implements Node{
     private final Node left;
     private final Node right;
     private final Op op;
@@ -22,11 +22,11 @@ public class BiOp implements Node {
         MINUS("-", (a, b) -> new IntConstant(((IntConstant) a).getValue() - ((IntConstant) b).getValue())),
         TIMES("*", (a, b) -> new IntConstant(((IntConstant) a).getValue() * ((IntConstant) b).getValue())),
         DIVIDE("/", (a, b) -> new IntConstant(((IntConstant) a).getValue() / ((IntConstant) b).getValue())),
+        LT("<", (a, b) -> BoolConstant.of(((IntConstant) a).getValue() < ((IntConstant) b).getValue())),
         OR("||", (a, b) -> BoolConstant.of(((BoolConstant) a).getValue() || ((BoolConstant) b).getValue())),
         AND("&&", (a, b) -> BoolConstant.of(((BoolConstant) a).getValue() && ((BoolConstant) b).getValue())),
         XOR("xor", (a, b) -> BoolConstant.of(((BoolConstant) a).getValue() != ((BoolConstant) b).getValue())),
         EQUAL("==", (a, b) -> BoolConstant.of(a.equals(b))),
-        CONS(":", (a, b) -> new Cons((IntConstant) a, (LCList) b)),
         ;
         private String stringVal;
         private BiFunction<Node, Node, Node> converter;
@@ -58,13 +58,18 @@ public class BiOp implements Node {
 
     @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
-        Node reducedLeft = left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        Node reducedLeft = left;
+        while(!(reducedLeft instanceof IrreductibleNode))
+            reducedLeft = reducedLeft.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
-            observer.ifPresent(obs -> obs.onUpdate(reducedLeft));
+            Node finalReducedLeft = reducedLeft;
+            observer.ifPresent(obs -> obs.onUpdate(finalReducedLeft));
             return reducedLeft;
         }
-        Node reducedRight = right.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(reducedLeft, op, newVal))));
+        Node reducedRight = right;
+        while(!(reducedRight instanceof IrreductibleNode))
+            reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
         return result;
@@ -72,13 +77,18 @@ public class BiOp implements Node {
 
     @Override
     public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
-        Node reducedLeft = left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        Node reducedLeft = left;
+        while(!(reducedLeft instanceof IrreductibleNode))
+            reducedLeft = reducedLeft.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
-            observer.ifPresent(obs -> obs.onUpdate(reducedLeft));
+            Node finalReducedLeft = reducedLeft;
+            observer.ifPresent(obs -> obs.onUpdate(finalReducedLeft));
             return reducedLeft;
         }
-        Node reducedRight = right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(reducedLeft, op, newVal))));
+        Node reducedRight = right;
+        while(!(reducedRight instanceof IrreductibleNode))
+            reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
         return result;

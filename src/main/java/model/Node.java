@@ -29,7 +29,7 @@ public interface Node {
         return reduceByNeed(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
     }
 
-    default Node reduceByNeed(Optional<NodeUpdateObserver> n) {
+    default Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
         return this;
     }
 

@@ -3,7 +3,7 @@ package model;
 import lombok.Getter;
 
 @Getter
-public class Lambda implements Node {
+public class Lambda implements Node, IrreductibleNode {
     private final String formalParam;
     private final Node body;
 

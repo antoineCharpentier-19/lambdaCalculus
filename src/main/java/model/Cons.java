@@ -20,14 +20,18 @@ public class Cons implements LCList {
         Node tmpHead = head;
         Node tmpTail = tail;
         if(topLevel) {
-            tmpHead = head.reduceByName(Optional.empty());
-            tmpTail = tail.reduceByName(Optional.empty());
+            while(!(tmpHead instanceof IrreductibleNode)) tmpHead = tmpHead.reduceByName(Optional.empty());
+            while(!(tmpTail instanceof IrreductibleNode)) tmpTail = tmpTail.reduceByName(Optional.empty());
         }
         String result = "(" + tmpHead.toString(topLevel);
         while(tmpTail instanceof Cons){
-            result += " : " + (topLevel ? ((Cons) tmpTail).getHead().reduceByName(Optional.empty()) : ((Cons) tmpTail).getHead()).toString(false);
+            tmpHead = ((Cons) tmpTail).getHead();
+            if(topLevel) {
+                while(!(tmpHead instanceof IrreductibleNode)) tmpHead = tmpHead.reduceByName(Optional.empty());
+            }
+            result += " : " + (tmpHead).toString(false);
             tmpTail = ((Cons) tmpTail).getTail();
-            if(topLevel) tmpTail = tmpTail.reduceByName(Optional.empty());
+            if(topLevel) while(!(tmpTail instanceof IrreductibleNode)) tmpTail = tmpTail.reduceByName(Optional.empty());
         }
         result += " : " + tmpTail.toString(false) + ")";
         return result;
