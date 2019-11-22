@@ -20,7 +20,7 @@ public interface Node {
         return reduceByValue(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
     }
 
-    default Node reduceByValue(Optional<NodeUpdateObserver> n) {
+    default Node reduceByValue(Optional<NodeUpdateObserver> observer) {
         return this;
     }
 
