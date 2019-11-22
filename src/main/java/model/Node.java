@@ -24,6 +24,15 @@ public interface Node {
         return this;
     }
 
+    default Node reduceByNeed(boolean print) {
+        if (print) System.out.println(this.toString(false));
+        return reduceByNeed(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
+    }
+
+    default Node reduceByNeed(Optional<NodeUpdateObserver> n) {
+        return this;
+    }
+
     default Node replaceOcc(String name, Node arg) {
         return this;
     }

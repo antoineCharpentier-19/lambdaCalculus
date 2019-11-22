@@ -26,6 +26,7 @@ public class IndirectionNode implements Node{
     public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
         if(!reduced) {
             wrapped = wrapped.reduceByValue(Optional.empty());
+            observer.ifPresent(o -> o.onUpdate(wrapped));
             reduced = true;
         }
         return this;

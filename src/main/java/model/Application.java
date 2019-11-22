@@ -35,6 +35,13 @@ public class Application implements Node {
         return betaReduced.reduceByValue(observer);
     }
 
+    @Override
+    public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
+        Node betaReduced = ((Lambda) left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))))).betaReduce(new IndirectionNode(right));
+        observer.ifPresent(o -> o.onUpdate(betaReduced));
+        return betaReduced.reduceByNeed(observer);
+    }
+
     public Node replaceOcc(String name, Node arg) {
         return new Application(left.replaceOcc(name, arg), right.replaceOcc(name, arg));
     }

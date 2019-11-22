@@ -6,14 +6,12 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.function.Function;
 
 public class TestUtils {
-    private static BoolConstant f = new BoolConstant(false);
-    private static BoolConstant t = new BoolConstant(true);
 
     public static Node node(String string) {
         if (StringUtils.isNumeric(string)) {
             return new IntConstant(Integer.parseInt(string));
         } else if (string.equalsIgnoreCase("false") || string.equalsIgnoreCase("true")) {
-            return Boolean.parseBoolean(string) ? t : f;
+            return Boolean.parseBoolean(string) ? BoolConstant.t : BoolConstant.t;
         } else return new Variable(string);
     }
 
@@ -43,7 +41,7 @@ public class TestUtils {
     }
 
     public static Node node(boolean val) {
-        return new BoolConstant(val);
+        return BoolConstant.of(val);
     }
 
     public static Node intList(int... ints) {
@@ -57,7 +55,7 @@ public class TestUtils {
     public static Node boolList(boolean... bools) {
         Node output = new Nil();
         for (int i = bools.length - 1; i >= 0; i--) {
-            output = new Cons(new BoolConstant(bools[i]), output);
+            output = new Cons(BoolConstant.of(bools[i]), output);
         }
         return output;
     }
@@ -113,7 +111,7 @@ public class TestUtils {
 
     public static Function<Boolean, Node> boolTestIfThenElse1() {
         return x -> new IfThenElse(
-                new BoolConstant(x.booleanValue()),
+                BoolConstant.of(x.booleanValue()),
                 node(false),
                 node(true));
     }

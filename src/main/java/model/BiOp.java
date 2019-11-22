@@ -22,10 +22,10 @@ public class BiOp implements Node {
         MINUS("-", (a, b) -> new IntConstant(((IntConstant) a).getValue() - ((IntConstant) b).getValue())),
         TIMES("*", (a, b) -> new IntConstant(((IntConstant) a).getValue() * ((IntConstant) b).getValue())),
         DIVIDE("/", (a, b) -> new IntConstant(((IntConstant) a).getValue() / ((IntConstant) b).getValue())),
-        OR("||", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() || ((BoolConstant) b).getValue())),
-        AND("&&", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() && ((BoolConstant) b).getValue())),
-        XOR("xor", (a, b) -> new BoolConstant(((BoolConstant) a).getValue() != ((BoolConstant) b).getValue())),
-        EQUAL("==", (a, b) -> new BoolConstant(a.equals(b))),
+        OR("||", (a, b) -> BoolConstant.of(((BoolConstant) a).getValue() || ((BoolConstant) b).getValue())),
+        AND("&&", (a, b) -> BoolConstant.of(((BoolConstant) a).getValue() && ((BoolConstant) b).getValue())),
+        XOR("xor", (a, b) -> BoolConstant.of(((BoolConstant) a).getValue() != ((BoolConstant) b).getValue())),
+        EQUAL("==", (a, b) -> BoolConstant.of(a.equals(b))),
         CONS(":", (a, b) -> new Cons((IntConstant) a, (LCList) b)),
         ;
         private String stringVal;
@@ -79,6 +79,26 @@ public class BiOp implements Node {
             return reducedLeft;
         }
         Node reducedRight = right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(reducedLeft, op, newVal))));
+        Node result = op.converter.apply(reducedLeft, reducedRight);
+        observer.ifPresent(obs -> obs.onUpdate(result));
+        return result;
+    }
+
+    @Override
+    public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
+        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        // special cases
+        if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
+            Node finalReducedLeft = reducedLeft;
+            observer.ifPresent(obs -> obs.onUpdate(finalReducedLeft));
+            return reducedLeft;
+        }
+        Node finalReducedLeft1 = reducedLeft;
+        Node reducedRight = right.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(finalReducedLeft1, op, newVal))));
+
+        if(reducedLeft instanceof IndirectionNode) reducedLeft = ((IndirectionNode) reducedLeft).getWrapped();
+        if(reducedRight instanceof IndirectionNode) reducedRight = ((IndirectionNode) reducedRight).getWrapped();
+
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
         return result;

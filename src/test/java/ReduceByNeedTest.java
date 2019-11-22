@@ -14,6 +14,6 @@ public class ReduceByNeedTest {
                 new Lambda("x", new BiOp(new BiOp(node("x"), "+", node("x")), "+", node("x"))),
                 new BiOp(node("1"), "+", node("1")));
                 //new Application(new Lambda("x",new BiOp(node("x"), "*", node("x"))), node("3")));
-        System.out.println(n.reduceByNeed(true).toString(true));
+        n.reduceByNeed(true);
     }
 }

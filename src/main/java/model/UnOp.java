@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 public class UnOp implements Node {
 
     public enum Op {
-        NOT("not", a -> new BoolConstant(!((BoolConstant) a).getValue())),
+        NOT("not", a -> BoolConstant.of(!((BoolConstant) a).getValue())),
         NEGATIVE("-", a -> new IntConstant(-((IntConstant) a).getValue())),
-        NIL("nil", a -> new BoolConstant(a instanceof Nil)),
+        NIL("nil", a -> BoolConstant.of(a instanceof Nil)),
         HEAD("head", a -> ((Cons) a).getHead()),
         TAIL("tail", a -> ((Cons) a).getTail());
         private String stringVal;
@@ -73,6 +73,20 @@ public class UnOp implements Node {
         observer.ifPresent(obs -> obs.onUpdate(result));
         return result;
     }
+
+    @Override
+    public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
+        Optional<NodeUpdateObserver> nodeUpdateObserver = observer.map(obs -> newVal -> obs.onUpdate(new UnOp(op, newVal)));
+        Node reducedBody = body.reduceByNeed(nodeUpdateObserver);
+        if (op == Op.TAIL || op == Op.HEAD) {
+            while (!(reducedBody instanceof Cons))
+                reducedBody = reducedBody.reduceByNeed(nodeUpdateObserver);
+        }
+        Node result = op.converter.apply(reducedBody);
+        observer.ifPresent(obs -> obs.onUpdate(result));
+        return result;
+    }
+
 
     public Node replaceOcc(String name, Node arg) {
         return new UnOp(op, body.replaceOcc(name, arg));
