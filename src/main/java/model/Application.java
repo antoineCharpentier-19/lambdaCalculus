@@ -37,7 +37,9 @@ public class Application implements Node {
 
     @Override
     public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
-        Node betaReduced = ((Lambda) left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))))).betaReduce(new IndirectionNode(right));
+        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))));
+        if (reducedLeft instanceof IndirectionNode) reducedLeft = ((IndirectionNode) reducedLeft).getWrapped();
+        Node betaReduced = ((Lambda) reducedLeft).betaReduce(right);
         observer.ifPresent(o -> o.onUpdate(betaReduced));
         return betaReduced.reduceByNeed(observer);
     }
