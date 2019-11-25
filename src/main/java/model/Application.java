@@ -1,7 +1,6 @@
 package model;
 
 import lombok.Getter;
-import util.LambdaCalculusUtils;
 import util.NodeUpdateObserver;
 
 import java.util.Optional;

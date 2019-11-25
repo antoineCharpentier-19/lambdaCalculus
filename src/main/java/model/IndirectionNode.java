@@ -32,6 +32,15 @@ public class IndirectionNode implements Node{
         return this;
     }
 
+    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
+        if(!reduced) {
+            wrapped = wrapped.reduceByName(Optional.empty());
+            observer.ifPresent(o -> o.onUpdate(wrapped));
+            reduced = true;
+        }
+        return this;
+    }
+
     public Node unwrap() {
         return wrapped.unwrap();
     }

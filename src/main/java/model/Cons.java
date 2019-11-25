@@ -1,11 +1,8 @@
 package model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import util.LambdaCalculusUtils;
-import util.NodeUpdateObserver;
 
 import java.util.Optional;
 
@@ -21,18 +18,18 @@ public class Cons implements LCList {
         Node tmpHead = head;
         Node tmpTail = tail;
         if(topLevel) {
-            while(!LambdaCalculusUtils.instanceOf(tmpHead, IrreductibleNode.class)) tmpHead = tmpHead.reduceByName(Optional.empty());
-            while(!LambdaCalculusUtils.instanceOf(tmpTail, IrreductibleNode.class)) tmpTail = tmpTail.reduceByName(Optional.empty());
+            while(! (tmpHead instanceof IrreductibleNode)) tmpHead = tmpHead.reduceByName(Optional.empty()).unwrap();
+            while(! (tmpTail instanceof IrreductibleNode)) tmpTail = tmpTail.reduceByName(Optional.empty()).unwrap();
         }
         String result = "(" + tmpHead.toString(topLevel);
         while(tmpTail instanceof Cons){
             tmpHead = ((Cons) tmpTail).getHead();
             if(topLevel) {
-                while(!(tmpHead instanceof IrreductibleNode)) tmpHead = tmpHead.reduceByName(Optional.empty());
+                while(!(tmpHead instanceof IrreductibleNode)) tmpHead = tmpHead.reduceByName(Optional.empty()).unwrap();
             }
             result += " : " + (tmpHead).toString(false);
             tmpTail = ((Cons) tmpTail).getTail();
-            if(topLevel) while(!(tmpTail instanceof IrreductibleNode)) tmpTail = tmpTail.reduceByName(Optional.empty());
+            if(topLevel) while(!(tmpTail instanceof IrreductibleNode)) tmpTail = tmpTail.reduceByName(Optional.empty()).unwrap();
         }
         result += " : " + tmpTail.toString(false) + ")";
         return result;
