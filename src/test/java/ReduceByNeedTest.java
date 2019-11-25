@@ -9,6 +9,7 @@ public class ReduceByNeedTest {
 
     @Test
     public void test() {
+        System.out.println("--------------------------");
         Node n = new Application(
                 new Lambda("x", new BiOp(new BiOp(node("x"), "+", node("x")), "+", node("x"))),
                 new Application(new Lambda("x", new BiOp(node("x"), "*", node("x"))), node("3")));
@@ -16,7 +17,7 @@ public class ReduceByNeedTest {
         System.out.println("--------------------------");
         Lambda lambda = new Lambda("x", new BiOp(node("x"), "+", node("x")));
         n = new BiOp(new Application(lambda, node(1)), "+", new Application(lambda, node(1)));
-        n.reduceByValue(true).print();
+        n.reduceByNeed(true).print();
     }
 
     @Test
