@@ -22,14 +22,14 @@ public class Application implements Node {
 
     @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
-        Node betaReduced = ((Lambda) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))).unwrap()).betaReduce(right);
+        Node betaReduced = ((LambdaExpr) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))).unwrap()).betaReduce(right);
         observer.ifPresent(o -> o.onUpdate(betaReduced));
         return betaReduced.reduceByName(observer);
     }
 
     @Override
     public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
-        Lambda l = ((Lambda) left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))));
+        LambdaExpr l = ((LambdaExpr) left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))));
         Node betaReduced = l.betaReduce(right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(l, newVal)))));
         observer.ifPresent(o -> o.onUpdate(betaReduced));
         return betaReduced.reduceByValue(observer);
@@ -38,7 +38,7 @@ public class Application implements Node {
     @Override
     public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
         Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))).unwrap();
-        Node betaReduced = ((Lambda) reducedLeft).betaReduce(new IndirectionNode(right));
+        Node betaReduced = ((LambdaExpr) reducedLeft).betaReduce(new IndirectionNode(right));
         observer.ifPresent(o -> o.onUpdate(betaReduced));
         return betaReduced.reduceByNeed(observer);
     }

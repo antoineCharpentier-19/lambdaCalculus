@@ -3,11 +3,11 @@ package model;
 import lombok.Getter;
 
 @Getter
-public class Lambda implements IrreductibleNode {
+public class LambdaExpr implements IrreductibleNode {
     private final String formalParam;
     private final Node body;
 
-    public Lambda(String formalParam, Node body) {
+    public LambdaExpr(String formalParam, Node body) {
         this.formalParam = formalParam;
         this.body = body;
     }
@@ -20,7 +20,7 @@ public class Lambda implements IrreductibleNode {
     @Override
     public Node replaceOcc(String name, Node arg) {
         if (!name.equals(formalParam)) { // name - capturing
-            return new Lambda(formalParam, body.replaceOcc(name, arg));
+            return new LambdaExpr(formalParam, body.replaceOcc(name, arg));
         } else {
             return this;
         }
