@@ -1,7 +1,6 @@
 package model;
 
 import lombok.AllArgsConstructor;
-import util.LambdaCalculusUtils;
 import util.NodeUpdateObserver;
 
 import java.util.Arrays;
@@ -54,7 +53,7 @@ public class UnOp implements Node {
         Node reducedBody = body.reduceByName(nodeUpdateObserver);
         if (op == Op.TAIL || op == Op.HEAD) {
             while (!(reducedBody instanceof Cons))
-                reducedBody = reducedBody.reduceByName(nodeUpdateObserver);
+                reducedBody = reducedBody.reduceByName(nodeUpdateObserver).unwrap();
         }
         Node result = op.converter.apply(reducedBody);
         observer.ifPresent(obs -> obs.onUpdate(result));

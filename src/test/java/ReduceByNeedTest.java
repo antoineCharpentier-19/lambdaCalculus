@@ -65,7 +65,7 @@ public class ReduceByNeedTest {
         INSERT.setNode(insert);
         Node node = multiApply(INSERT, node(2), intList(1, 2, 3));
         System.out.println("--------------------------");
-        System.out.println(node.reduceByValue(true).toString(true));
+        System.out.println(node.reduceByNeed(true).toString(true));
 
         /*
          mySort'' :: [Int] -> [Int]
@@ -89,7 +89,7 @@ public class ReduceByNeedTest {
                 )
         );
         SORT.setNode(sort);
-        node = new Application(SORT, intList(2,321,4,66,3,21));
+        node = new Application(SORT, intList(1,2,3));
         System.out.println("--------------------------");
         System.out.println(node.reduceByValue(true).toString(true));
     }

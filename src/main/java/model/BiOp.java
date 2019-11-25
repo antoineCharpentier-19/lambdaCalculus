@@ -1,7 +1,6 @@
 package model;
 
 import lombok.Data;
-import util.LambdaCalculusUtils;
 import util.NodeUpdateObserver;
 
 import java.util.Arrays;
@@ -60,8 +59,8 @@ public class BiOp implements Node{
     @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
         Node reducedLeft = left;
-        while(!LambdaCalculusUtils.instanceOf(reducedLeft, IrreductibleNode.class))
-            reducedLeft = reducedLeft.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        while(!(reducedLeft instanceof IrreductibleNode))
+            reducedLeft = reducedLeft.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right)))).unwrap();
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
             Node finalReducedLeft = reducedLeft;
@@ -69,8 +68,8 @@ public class BiOp implements Node{
             return reducedLeft;
         }
         Node reducedRight = right;
-        while(!LambdaCalculusUtils.instanceOf(reducedRight, IrreductibleNode.class))
-            reducedRight = reducedRight.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        while(!(reducedRight instanceof IrreductibleNode))
+            reducedRight = reducedRight.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right)))).unwrap();
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
         return result;
@@ -79,7 +78,7 @@ public class BiOp implements Node{
     @Override
     public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
         Node reducedLeft = left;
-        while(!LambdaCalculusUtils.instanceOf(reducedLeft, IrreductibleNode.class))
+        while(!(reducedLeft.unwrap() instanceof IrreductibleNode))
             reducedLeft = reducedLeft.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
@@ -88,7 +87,7 @@ public class BiOp implements Node{
             return reducedLeft;
         }
         Node reducedRight = right;
-        while(!LambdaCalculusUtils.instanceOf(reducedRight, IrreductibleNode.class))
+        while(!(reducedRight.unwrap() instanceof IrreductibleNode))
             reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
