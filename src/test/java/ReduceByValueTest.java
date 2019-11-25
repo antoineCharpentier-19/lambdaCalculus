@@ -49,8 +49,8 @@ public class ReduceByValueTest {
     @Test
     public void IntTest() {
         // (\x -> (\y -> ((- 1)-y))) 2 3
-        System.out.println("--------------------------");
-        assertEquals("-4", intTest1().reduceByValue(true).print());
+//        System.out.println("--------------------------");
+//        assertEquals("-4", intTest1().reduceByValue(true).print());
 
         // 8/4 + 1x3
         System.out.println("--------------------------");

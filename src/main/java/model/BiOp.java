@@ -87,8 +87,10 @@ public class BiOp implements Node{
             return reducedLeft;
         }
         Node reducedRight = right;
-        while(!(reducedRight.unwrap() instanceof IrreductibleNode))
-            reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        while(!(reducedRight.unwrap() instanceof IrreductibleNode)) {
+            Node finalReducedLeft1 = reducedLeft;
+            reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(finalReducedLeft1, op, newVal))));
+        }
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
         return result;

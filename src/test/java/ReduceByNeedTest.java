@@ -86,7 +86,7 @@ public class ReduceByNeedTest {
                 )
         );
         SORT.setNode(sort);
-        node = new Application(SORT, intList(1,2,3));
+        node = new Application(SORT, intList(3,2,1));
         System.out.println("--------------------------");
         System.out.println(node.reduceByValue(true).toString(true));
     }
