@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import util.LambdaCalculusUtils;
 import util.NodeUpdateObserver;
 
 import java.util.Optional;
@@ -20,8 +21,8 @@ public class Cons implements LCList {
         Node tmpHead = head;
         Node tmpTail = tail;
         if(topLevel) {
-            while(!(tmpHead instanceof IrreductibleNode)) tmpHead = tmpHead.reduceByName(Optional.empty());
-            while(!(tmpTail instanceof IrreductibleNode)) tmpTail = tmpTail.reduceByName(Optional.empty());
+            while(!LambdaCalculusUtils.instanceOf(tmpHead, IrreductibleNode.class)) tmpHead = tmpHead.reduceByName(Optional.empty());
+            while(!LambdaCalculusUtils.instanceOf(tmpTail, IrreductibleNode.class)) tmpTail = tmpTail.reduceByName(Optional.empty());
         }
         String result = "(" + tmpHead.toString(topLevel);
         while(tmpTail instanceof Cons){

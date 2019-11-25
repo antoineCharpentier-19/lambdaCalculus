@@ -31,4 +31,8 @@ public class IndirectionNode implements Node{
         }
         return this;
     }
+
+    public Node unwrap() {
+        return wrapped.unwrap();
+    }
 }

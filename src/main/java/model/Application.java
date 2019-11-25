@@ -1,6 +1,7 @@
 package model;
 
 import lombok.Getter;
+import util.LambdaCalculusUtils;
 import util.NodeUpdateObserver;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class Application implements Node {
 
     @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
-        Node betaReduced = ((Lambda) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))))).betaReduce(right);
+        Node betaReduced = ((Lambda) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))).unwrap()).betaReduce(right);
         observer.ifPresent(o -> o.onUpdate(betaReduced));
         return betaReduced.reduceByName(observer);
     }
@@ -37,8 +38,7 @@ public class Application implements Node {
 
     @Override
     public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
-        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right))));
-        if (reducedLeft instanceof IndirectionNode) reducedLeft = ((IndirectionNode) reducedLeft).getWrapped();
+        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))).unwrap();
         Node betaReduced = ((Lambda) reducedLeft).betaReduce(new IndirectionNode(right));
         observer.ifPresent(o -> o.onUpdate(betaReduced));
         return betaReduced.reduceByNeed(observer);

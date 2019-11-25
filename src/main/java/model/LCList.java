@@ -1,4 +1,4 @@
 package model;
 
-public interface LCList extends Node, IrreductibleNode {
+public interface LCList extends IrreductibleNode {
 }

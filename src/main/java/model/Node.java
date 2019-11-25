@@ -41,5 +41,9 @@ public interface Node {
         return toString(false);
     }
 
+    default Node unwrap() {
+        return this;
+    }
+
     String toString(boolean topLevel);
 }

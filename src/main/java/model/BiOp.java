@@ -1,6 +1,7 @@
 package model;
 
 import lombok.Data;
+import util.LambdaCalculusUtils;
 import util.NodeUpdateObserver;
 
 import java.util.Arrays;
@@ -59,8 +60,8 @@ public class BiOp implements Node{
     @Override
     public Node reduceByName(Optional<NodeUpdateObserver> observer) {
         Node reducedLeft = left;
-        while(!(reducedLeft instanceof IrreductibleNode))
-            reducedLeft = reducedLeft.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        while(!LambdaCalculusUtils.instanceOf(reducedLeft, IrreductibleNode.class))
+            reducedLeft = reducedLeft.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
             Node finalReducedLeft = reducedLeft;
@@ -68,8 +69,8 @@ public class BiOp implements Node{
             return reducedLeft;
         }
         Node reducedRight = right;
-        while(!(reducedRight instanceof IrreductibleNode))
-            reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        while(!LambdaCalculusUtils.instanceOf(reducedRight, IrreductibleNode.class))
+            reducedRight = reducedRight.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
         return result;
@@ -78,7 +79,7 @@ public class BiOp implements Node{
     @Override
     public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
         Node reducedLeft = left;
-        while(!(reducedLeft instanceof IrreductibleNode))
+        while(!LambdaCalculusUtils.instanceOf(reducedLeft, IrreductibleNode.class))
             reducedLeft = reducedLeft.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
@@ -87,7 +88,7 @@ public class BiOp implements Node{
             return reducedLeft;
         }
         Node reducedRight = right;
-        while(!(reducedRight instanceof IrreductibleNode))
+        while(!LambdaCalculusUtils.instanceOf(reducedRight, IrreductibleNode.class))
             reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));
@@ -96,7 +97,7 @@ public class BiOp implements Node{
 
     @Override
     public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
-        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right)))).unwrap();
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
             Node finalReducedLeft = reducedLeft;
@@ -104,10 +105,7 @@ public class BiOp implements Node{
             return reducedLeft;
         }
         Node finalReducedLeft1 = reducedLeft;
-        Node reducedRight = right.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(finalReducedLeft1, op, newVal))));
-
-        if(reducedLeft instanceof IndirectionNode) reducedLeft = ((IndirectionNode) reducedLeft).getWrapped();
-        if(reducedRight instanceof IndirectionNode) reducedRight = ((IndirectionNode) reducedRight).getWrapped();
+        Node reducedRight = right.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(finalReducedLeft1, op, newVal)))).unwrap();
 
         Node result = op.converter.apply(reducedLeft, reducedRight);
         observer.ifPresent(obs -> obs.onUpdate(result));

@@ -1,5 +1,5 @@
 package model;
 
 // tagging interface
-public interface IrreductibleNode {
+public interface IrreductibleNode extends Node{
 }

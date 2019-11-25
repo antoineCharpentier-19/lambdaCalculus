@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.Objects;
 
 @Getter
-public class IntConstant implements Node, IrreductibleNode {
+public class IntConstant implements IrreductibleNode {
 
     private int value;
 
