@@ -25,15 +25,15 @@ public class TestUtils {
         return new Application(tmpLeft, tmpRight);
     }
 
-    public static Lambda multiLambda(String[] formalParams, Node body) {
+    public static LambdaExpr multiLambda(String[] formalParams, Node body) {
         String tmpParam = formalParams[formalParams.length - 1];
         Node tmpBody = body;
 
         for (int i = formalParams.length - 2; i >= 0; i--) {
-            tmpBody = new Lambda(tmpParam, tmpBody);
+            tmpBody = new LambdaExpr(tmpParam, tmpBody);
             tmpParam = formalParams[i];
         }
-        return new Lambda(tmpParam, tmpBody);
+        return new LambdaExpr(tmpParam, tmpBody);
     }
 
     public static Node node(int val) {
@@ -63,7 +63,7 @@ public class TestUtils {
     public static Application lambdaTestNode3() {
         return new Application(
                 new Application(
-                        new Lambda("x", new Lambda("y", new Variable("x"))),
+                        new LambdaExpr("x", new LambdaExpr("y", new Variable("x"))),
                         new Variable("b")),
                 new Variable("a")
         );
@@ -71,18 +71,18 @@ public class TestUtils {
 
     public static Application lambdaTestNode2() {
         return new Application(
-                new Lambda(
+                new LambdaExpr(
                         "x",
                         new Application(
-                                new Lambda("y", node("x")),
+                                new LambdaExpr("y", node("x")),
                                 node("a"))),
                 node("b"));
     }
 
     public static Node lambdaTestNode1() {
         return new Application(
-                new Lambda("x", new Variable("x")),
-                new Lambda("y", new Variable("y"))
+                new LambdaExpr("x", new Variable("x")),
+                new LambdaExpr("y", new Variable("y"))
         );
     }
 
@@ -117,7 +117,7 @@ public class TestUtils {
     }
 
     public static Function<Boolean, Node> boolTestNode1() {
-        return x -> new Application(new Lambda("x", new UnOp(UnOp.Op.NOT, new Variable("x"))), node(x));
+        return x -> new Application(new LambdaExpr("x", new UnOp(UnOp.Op.NOT, new Variable("x"))), node(x));
     }
 
     public static BiOp intTest2() {
@@ -135,7 +135,7 @@ public class TestUtils {
 
     public static Node recursionTestFac(int number) {
         RecursiveNode FAC = new RecursiveNode("FAC");
-        Lambda fac = new Lambda("n",
+        LambdaExpr fac = new LambdaExpr("n",
                 new IfThenElse(
                         new BiOp(node("n"), "==", node("0")),
                         node("1"),
@@ -149,10 +149,10 @@ public class TestUtils {
     }
 
     public static Node mapFoldRApplied() {
-        return multiApply(listsTestMapWithFoldR(), intList(3, 2, 1), new Lambda("x", new BiOp(node("x"), "+", node("x"))));
+        return multiApply(listsTestMapWithFoldR(), intList(3, 2, 1), new LambdaExpr("x", new BiOp(node("x"), "+", node("x"))));
     }
 
-    public static Lambda listsTestMapWithFoldR() {
+    public static LambdaExpr listsTestMapWithFoldR() {
         return multiLambda(new String[]{"l", "f"},
                 multiApply(listsTestFoldR(),
                         node("l"),
@@ -164,7 +164,7 @@ public class TestUtils {
 
     public static RecursiveNode listsTestFoldR() {
         RecursiveNode FOLDR = new RecursiveNode("FOLD");
-        Lambda foldr = multiLambda(new String[]{"l", "p", "f"},
+        LambdaExpr foldr = multiLambda(new String[]{"l", "p", "f"},
                 new IfThenElse(
                         new UnOp("nil", node("l")),
                         node("p"),
@@ -182,12 +182,12 @@ public class TestUtils {
     }
 
     public static Node mapApplied1() {
-        return multiApply(mapLambda(), intList(1, 2, 3), new Lambda("x", new BiOp(node("x"), "+", node(1))));
+        return multiApply(mapLambda(), intList(1, 2, 3), new LambdaExpr("x", new BiOp(node("x"), "+", node(1))));
     }
 
     public static RecursiveNode mapLambda() {
         RecursiveNode MAP = new RecursiveNode("MAP");
-        Lambda map = multiLambda(
+        LambdaExpr map = multiLambda(
                 new String[]{"l", "f"},
                 new IfThenElse(
                         new UnOp("nil", node("l")),
@@ -211,7 +211,7 @@ public class TestUtils {
 
     public static RecursiveNode foldL() {
         RecursiveNode FOLD = new RecursiveNode("FOLD");
-        Lambda fold = multiLambda(new String[]{"l", "p", "f"},
+        LambdaExpr fold = multiLambda(new String[]{"l", "p", "f"},
                 new IfThenElse(
                         new UnOp("nil", node("l")),
                         node("p"),
@@ -225,6 +225,12 @@ public class TestUtils {
     }
 
     public static Node mapAppliedOnBoolList() {
-        return multiApply(mapLambda(), boolList(true, false, false), new Lambda("x", new UnOp("not", node("x"))));
+        return multiApply(mapLambda(), boolList(true, false, false), new LambdaExpr("x", new UnOp("not", node("x"))));
+    }
+
+    public static Node tripleTimes() {
+        return new Application(
+                new LambdaExpr("x", new BiOp(new BiOp(node("x"), "+", node("x")), "+", node("x"))),
+                new Application(new LambdaExpr("x", new BiOp(node("x"), "*", node("x"))), node("3")));
     }
 }

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>model</OriginalElement>
+  <nodes>
+    <node x="0.0" y="795.8853203941492">model.RecursiveNode</node>
+    <node x="1731.311784317637" y="503.8553796746778">model.BiOp</node>
+    <node x="465.69422374496867" y="377.2280976038244">model.Application</node>
+    <node x="666.9291448763665" y="1021.7389098543995">model.Variable</node>
+    <node x="905.1629640914634" y="1638.7325608296396">model.LCList</node>
+    <node x="1399.9699630257142" y="115.8304672741665">model.UnOp</node>
+    <node x="1175.7645621213267" y="1694.0914057551981">model.BoolConstant</node>
+    <node x="856.3157200668131" y="1266.9780132887665">model.IntConstant</node>
+    <node x="1038.3582872552056" y="1515.1227014694887">model.IrreductibleNode</node>
+    <node x="1061.9791540654255" y="607.2323226911823">model.Node</node>
+    <node x="1269.2145558558452" y="1324.2777134939815">model.LambdaExpr</node>
+    <node x="197.87476280834903" y="348.0724937352891">util.NodeUpdateObserver</node>
+    <node x="777.5358655853281" y="1838.4994387068255">model.Cons</node>
+    <node x="635.9674188424959" y="1570.6624249066422">model.Nil</node>
+    <node x="1537.4795891601539" y="1093.7510062247125">model.IndirectionNode</node>
+    <node x="872.757750139117" y="0.0">model.IfThenElse</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="model.IrreductibleNode" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.LCList" target="model.IrreductibleNode">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.Variable" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.BiOp" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.UnOp" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.Cons" target="model.LCList">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.LambdaExpr" target="model.IrreductibleNode">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.IndirectionNode" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.IfThenElse" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.BoolConstant" target="model.IrreductibleNode">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.Application" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.IntConstant" target="model.IrreductibleNode">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.RecursiveNode" target="model.Node">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="model.Nil" target="model.LCList">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Circular" zoom="0.22236286919831225" x="1304.4296343101064" y="843.7980797822283" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

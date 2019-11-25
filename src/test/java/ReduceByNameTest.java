@@ -102,7 +102,7 @@ public class ReduceByNameTest {
                                 multiApply(
                                         mapLambda(),
                                         INF_ONE,
-                                        new Lambda(
+                                        new LambdaExpr(
                                                 "x",
                                                 new BiOp(node("x"), "+", node(1))
                                         )
@@ -111,7 +111,7 @@ public class ReduceByNameTest {
         RecursiveNode INF_INTS = new RecursiveNode("INF_INTS");
         Node intInts = new Cons(node(1),
                 multiApply(
-                        mapLambda(), INF_INTS, new Lambda(
+                        mapLambda(), INF_INTS, new LambdaExpr(
                                 "x",
                                 new BiOp(node("x"), "+", node(1))
                         )));

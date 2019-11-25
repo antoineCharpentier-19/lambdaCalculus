@@ -9,10 +9,13 @@ public class ReduceByNeedTest {
 
     @Test
     public void test() {
-        Node n = new Application(
-                new Lambda("x", new BiOp(new BiOp(node("x"), "+", node("x")), "+", node("x"))),
-                new Application(new Lambda("x", new BiOp(node("x"), "*", node("x"))), node("3")));
-        n.reduceByNeed(true);
+        tripleTimes().reduceByNeed(true);
+    }
+
+    private Node tripleTimes() {
+        return new Application(
+                    new LambdaExpr("x", new BiOp(new BiOp(node("x"), "+", node("x")), "+", node("x"))),
+                    new Application(new LambdaExpr("x", new BiOp(node("x"), "*", node("x"))), node("3")));
     }
 
     @Test
@@ -48,7 +51,7 @@ public class ReduceByNeedTest {
          */
 
         RecursiveNode INSERT = new RecursiveNode("INSERT");
-        Lambda insert = multiLambda(new String[]{"x", "y"},
+        LambdaExpr insert = multiLambda(new String[]{"x", "y"},
                 new IfThenElse(
                         new UnOp("nil", node("y")),
                         new Cons(node("x"), new Nil()),
@@ -73,7 +76,7 @@ public class ReduceByNeedTest {
                             else myInsert' (head x) (mySort'' (tail x))
          */
         RecursiveNode SORT = new RecursiveNode("SORT");
-        Lambda sort = new Lambda(
+        LambdaExpr sort = new LambdaExpr(
                 "x",
                 new IfThenElse(
                         new UnOp("nil", node("x")),
