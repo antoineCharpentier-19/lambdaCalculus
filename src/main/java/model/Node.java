@@ -10,7 +10,7 @@ public interface Node {
     default Node reduceByName(boolean print) {
         if (print) System.out.println(this.toString(false));
         AtomicInteger c = new AtomicInteger(0);
-        Node output = reduceByNeed(print ? Optional.of(newVal -> {System.out.println(newVal.toString(false)); c.incrementAndGet();}) : Optional.of(newVal -> c.incrementAndGet()));
+        Node output = reduceByName(print ? Optional.of(newVal -> {System.out.println(newVal.toString(false)); c.incrementAndGet();}) : Optional.of(newVal -> c.incrementAndGet()));
         System.out.println(c.intValue() + " réductions en call by Name.");
         return output;
     }

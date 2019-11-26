@@ -20,7 +20,7 @@ public class ReduceByNameTest {
 
         // (\x -> (\y -> x)) b a
         System.out.println("--------------------------");
-        assertEquals("b", lambdaTestNode3().reduceByName(true).print());
+        testTout().reduceByName(true).print();
     }
 
     @Test
