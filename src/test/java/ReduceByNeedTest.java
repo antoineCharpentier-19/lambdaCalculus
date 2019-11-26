@@ -14,12 +14,6 @@ public class ReduceByNeedTest {
         multiApply(pow(), node("2"), node("3")).reduceByNeed(true);
     }
 
-    private Node tripleTimes() {
-        return new Application(
-                    new LambdaExpr("x", new BiOp(new BiOp(node("x"), "+", node("x")), "+", node("x"))),
-                    new Application(new LambdaExpr("x", new BiOp(node("x"), "*", node("x"))), node("3")));
-    }
-
     @Test
     public void listsTestRight() {
         System.out.println("--------------------------");
