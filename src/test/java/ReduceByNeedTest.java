@@ -9,9 +9,9 @@ public class ReduceByNeedTest {
 
     @Test
     public void test() {
-        tripleTimes().reduceByNeed(true);
+//        tripleTimes().reduceByNeed(true);
 //
-        multiApply(pow(), node("2"), node("3")).reduceByNeed(true);
+        multiApply(pow(), node("2"), node("3")).reduceByName(true);
     }
 
     @Test
