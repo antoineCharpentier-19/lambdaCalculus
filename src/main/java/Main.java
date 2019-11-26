@@ -31,6 +31,11 @@ public class Main {
         tripleTimes().reduceByName(true);
         System.out.println();
 
+        System.out.println("### Récursion");
+        System.out.println();
+        multiApply(pow(), node("2"), node("3")).reduceByName(true);
+        System.out.println();
+
         System.out.println("-----------------Call by value--------------------");
         System.out.println();
 
@@ -59,6 +64,11 @@ public class Main {
         tripleTimes().reduceByValue(true);
         System.out.println();
 
+        System.out.println("### Récursion");
+        System.out.println();
+        multiApply(pow(), node("2"), node("3")).reduceByValue(true);
+        System.out.println();
+
         System.out.println("-----------------Call by need--------------------");
         System.out.println();
 
@@ -85,6 +95,11 @@ public class Main {
         intTest2().reduceByNeed(true);
         System.out.println("-------");
         tripleTimes().reduceByNeed(true);
+        System.out.println();
+
+        System.out.println("### Récursion");
+        System.out.println();
+        multiApply(pow(), node("2"), node("3")).reduceByNeed(true);
         System.out.println();
 
     }
