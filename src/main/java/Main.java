@@ -102,5 +102,9 @@ public class Main {
         multiApply(pow(), node("2"), node("3")).reduceByNeed(true);
         System.out.println();
 
+        testTout().reduceByName(true);
+        testTout().reduceByValue(true);
+        testTout().reduceByNeed(true);
+
     }
 }

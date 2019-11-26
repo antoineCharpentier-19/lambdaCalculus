@@ -250,4 +250,10 @@ public class TestUtils {
                 new LambdaExpr("x", new BiOp(new BiOp(node("x"), "+", node("x")), "+", node("x"))),
                 new Application(new LambdaExpr("x", new BiOp(node("x"), "*", node("x"))), node("3")));
     }
+    public static Node testTout() {
+        return multiApply(
+                multiLambda(new String[]{"x", "y"}, new BiOp(node("x"), "+", node("x"))),
+                        new BiOp(node(1), "+", node(2)),
+                        new BiOp(node(3), "+", node(4)));
+    }
 }
