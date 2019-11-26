@@ -3,14 +3,30 @@ import static util.TestUtils.*;
 public class Main {
     public static void main(String[] args) {
 
+        System.out.println("#################################################");
+        System.out.println("Test du nombre de réductions en fonction du type");
+        System.out.println("#################################################");
+        System.out.println("-------Réduction par nom-------");
+        System.out.println();
+        testComparaison().reduceByName(true);
+        System.out.println();
+        System.out.println("-------Réduction par valeur-------");
+        System.out.println();
+        testComparaison().reduceByValue(true);
+        System.out.println();
+        System.out.println("-------Réduction par nécessité-------");
+        System.out.println();
+        testComparaison().reduceByNeed(true);
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
         System.out.println("-----------------Call by name--------------------");
         System.out.println();
 
         System.out.println("### Pur lambda");
         System.out.println();
         lambdaTestNode1().reduceByName(true);
-        System.out.println("-------");
-        lambdaTestNode3().reduceByName(true);
         System.out.println();
 
         System.out.println("### Booléens");
@@ -18,8 +34,6 @@ public class Main {
         boolTestOr().reduceByName(true);
         System.out.println("-------");
         boolTestIfThenElse2().apply(false).reduceByName(true);
-        System.out.println("-------");
-        System.out.println(mapAppliedOnBoolList().reduceByName(true).toString(true));
         System.out.println();
 
         System.out.println("### Entiers");
@@ -36,14 +50,17 @@ public class Main {
         multiApply(pow(), node("2"), node("3")).reduceByName(true);
         System.out.println();
 
+        System.out.println("### Listes");
+        System.out.println();
+        boolTestIfThenElse2().apply(false).reduceByName(true);
+        System.out.println();
+
         System.out.println("-----------------Call by value--------------------");
         System.out.println();
 
         System.out.println("### Pur lambda");
         System.out.println();
         lambdaTestNode1().reduceByValue(true);
-        System.out.println("-------");
-        lambdaTestNode3().reduceByValue(true);
         System.out.println();
 
         System.out.println("### Booléens");
@@ -51,8 +68,6 @@ public class Main {
         boolTestOr().reduceByValue(true);
         System.out.println("-------");
         boolTestIfThenElse2().apply(false).reduceByValue(true);
-        System.out.println("-------");
-        System.out.println(mapAppliedOnBoolList().reduceByValue(true).toString(true));
         System.out.println();
 
         System.out.println("### Entiers");
@@ -69,14 +84,17 @@ public class Main {
         multiApply(pow(), node("2"), node("3")).reduceByValue(true);
         System.out.println();
 
+        System.out.println("### Listes");
+        System.out.println();
+        boolTestIfThenElse2().apply(false).reduceByName(true);
+        System.out.println();
+
         System.out.println("-----------------Call by need--------------------");
         System.out.println();
 
         System.out.println("### Pur lambda");
         System.out.println();
         lambdaTestNode1().reduceByNeed(true);
-        System.out.println("-------");
-        lambdaTestNode3().reduceByNeed(true);
         System.out.println();
 
         System.out.println("### Booléens");
@@ -84,8 +102,6 @@ public class Main {
         boolTestOr().reduceByNeed(true);
         System.out.println("-------");
         boolTestIfThenElse2().apply(false).reduceByNeed(true);
-        System.out.println("-------");
-        System.out.println(mapAppliedOnBoolList().reduceByNeed(true).toString(true));
         System.out.println();
 
         System.out.println("### Entiers");
@@ -102,9 +118,13 @@ public class Main {
         multiApply(pow(), node("2"), node("3")).reduceByNeed(true);
         System.out.println();
 
-        testTout().reduceByName(true);
-        testTout().reduceByValue(true);
-        testTout().reduceByNeed(true);
+        System.out.println("### Listes");
+        System.out.println();
+        boolTestIfThenElse2().apply(false).reduceByName(true);
+        System.out.println();
+
+
+
 
     }
 }

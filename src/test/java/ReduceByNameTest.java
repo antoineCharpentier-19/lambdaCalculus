@@ -20,7 +20,7 @@ public class ReduceByNameTest {
 
         // (\x -> (\y -> x)) b a
         System.out.println("--------------------------");
-        testTout().reduceByName(true).print();
+        testComparaison().reduceByName(true).print();
     }
 
     @Test
