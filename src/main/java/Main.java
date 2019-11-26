@@ -1,3 +1,5 @@
+import model.*;
+
 import static util.TestUtils.*;
 
 public class Main {
@@ -21,7 +23,23 @@ public class Main {
         System.out.println();
         System.out.println();
 
-        System.out.println("-----------------Call by name--------------------");
+        System.out.println("#################################################");
+        System.out.println("Comportement des listes selon le type de réduction");
+        System.out.println("#################################################");
+
+        Node list = new Cons(new BiOp(node(1), "+", node(2)), new Cons(new BiOp(node(3), "+", node(4)), new Nil()));
+        System.out.println();
+        System.out.println("-------Réduction par nom-------");
+        System.out.println();
+        list.reduceByName(true);
+        System.out.println();
+        System.out.println("-------Réduction par valeur-------");
+        System.out.println();
+        list.reduceByValue(true);
+
+        System.out.println("#############################################################");
+        System.out.println("-----------------Exemples de Call by name--------------------");
+        System.out.println("#############################################################");
         System.out.println();
 
         System.out.println("### Pur lambda");
@@ -54,8 +72,13 @@ public class Main {
         System.out.println();
         boolTestIfThenElse2().apply(false).reduceByName(true);
         System.out.println();
+        System.out.println();
+        new Application(sortLambda(), intList(3,2,1)).reduceByName(true);
+        System.out.println();
 
-        System.out.println("-----------------Call by value--------------------");
+        System.out.println("#############################################################");
+        System.out.println("-----------------Exemples de Call by value--------------------");
+        System.out.println("#############################################################");
         System.out.println();
 
         System.out.println("### Pur lambda");
@@ -86,10 +109,16 @@ public class Main {
 
         System.out.println("### Listes");
         System.out.println();
-        boolTestIfThenElse2().apply(false).reduceByName(true);
+        boolTestIfThenElse2().apply(false).reduceByValue(true);
+        System.out.println();
+        System.out.println();
+        new Application(sortLambda(), intList(3,2,1)).reduceByValue(true);
         System.out.println();
 
-        System.out.println("-----------------Call by need--------------------");
+
+        System.out.println("#############################################################");
+        System.out.println("-----------------Exemples de Call by need--------------------");
+        System.out.println("#############################################################");
         System.out.println();
 
         System.out.println("### Pur lambda");
@@ -120,9 +149,11 @@ public class Main {
 
         System.out.println("### Listes");
         System.out.println();
-        boolTestIfThenElse2().apply(false).reduceByName(true);
+        boolTestIfThenElse2().apply(false).reduceByNeed(true);
         System.out.println();
-
+        System.out.println();
+        new Application(sortLambda(), intList(3,2,1)).reduceByNeed(true);
+        System.out.println();
 
 
 

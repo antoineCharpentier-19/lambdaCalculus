@@ -36,16 +36,6 @@ public class ReduceByNeedTest {
 
     @Test
     public void insertSortTest() {
-        /*
-        myInsert' :: Int -> [Int] -> [Int]
-        myInsert' x y = if length y == 0
-                        then [x]
-                        else if x < head y
-                            then x : y
-                            else
-                                (head y) : myInsert' x (tail y)
-         */
-
         RecursiveNode INSERT = new RecursiveNode("INSERT");
         LambdaExpr insert = multiLambda(new String[]{"x", "y"},
                 new IfThenElse(
@@ -62,15 +52,6 @@ public class ReduceByNeedTest {
         Node node = multiApply(INSERT, node(2), intList(1, 2, 3));
         System.out.println("--------------------------");
         System.out.println("top level printer : " + node.reduceByNeed(true).toString(true));
-
-        /*
-         mySort'' :: [Int] -> [Int]
-         mySort'' x =   if length x == 0
-                        then []
-                        else if length x == 1
-                            then x
-                            else myInsert' (head x) (mySort'' (tail x))
-         */
         RecursiveNode SORT = new RecursiveNode("SORT");
         LambdaExpr sort = new LambdaExpr(
                 "x",

@@ -120,6 +120,35 @@ public class TestUtils {
         return x -> new Application(new LambdaExpr("x", new UnOp(UnOp.Op.NOT, new Variable("x"))), node(x));
     }
 
+    public static Node sortLambda() {
+        RecursiveNode insert = new RecursiveNode("INSERT");
+        insert.setNode(multiLambda(new String[]{"x", "y"},
+                new IfThenElse(
+                        new UnOp("nil", node("y")),
+                        new Cons(node("x"), new Nil()),
+                        new IfThenElse(
+                                new BiOp(node("x"), "<", new UnOp("head", node("y"))),
+                                new Cons(node("x"), node("y")),
+                                new Cons(new UnOp("head", node("y")), multiApply(insert, node("x"), new UnOp("tail", node("y"))))
+                        )
+                )
+        ));
+        RecursiveNode sort = new RecursiveNode("SORT");
+        sort.setNode(new LambdaExpr(
+                "x",
+                new IfThenElse(
+                        new UnOp("nil", node("x")),
+                        new Nil(),
+                        new IfThenElse(
+                                new UnOp("nil", new UnOp("tail", node("x"))),
+                                node("x"),
+                                multiApply(insert, new UnOp("head", node("x")), new Application(sort, new UnOp("tail", node("x"))))
+                        )
+                )
+        ));
+        return sort;
+    }
+
     public static BiOp intTest2() {
         return new BiOp(new BiOp(node(8), "/", node(4)), "+", new BiOp(node(1), "*", node(3)));
     }
@@ -162,20 +191,19 @@ public class TestUtils {
                                         new Application(node("f"), node("x")), node("y")))));
     }
 
-    public static LambdaExpr pow() {
-        RecursiveNode POW = new RecursiveNode("POW");
-        LambdaExpr pow = multiLambda(new String[]{"x", "n"},
+    public static Node pow() {
+        RecursiveNode pow = new RecursiveNode("POW");
+        pow.setNode(multiLambda(new String[]{"x", "n"},
                 new IfThenElse(
                         new BiOp(node("n"), "==", node("0")),
                         node("1"),
                         new BiOp(
                                 node("x"),
                                 "*",
-                                multiApply(POW, node("x"), new BiOp(
+                                multiApply(pow, node("x"), new BiOp(
                                         node("n"),
                                         "-",
-                                        node("1"))))));
-        POW.setNode(pow);
+                                        node("1")))))));
         return pow;
     }
 
