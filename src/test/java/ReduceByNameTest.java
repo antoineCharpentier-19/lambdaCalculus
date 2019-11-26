@@ -10,13 +10,13 @@ public class ReduceByNameTest {
 
     @Test
     public void pureLambdaTest() {
-        // (\x -> x ) (\y -> y )
-        System.out.println("--------------------------");
-        assertEquals("(\\y -> y)", lambdaTestNode1().reduceByName(true).toString(false));
-
-        // (\x -> (\y -> x) a) b
-        System.out.println("--------------------------");
-        assertEquals("b", lambdaTestNode2().reduceByName(true).toString(false));
+//        // (\x -> x ) (\y -> y )
+//        System.out.println("--------------------------");
+//        assertEquals("(\\y -> y)", lambdaTestNode1().reduceByName(true).toString(false));
+//
+//        // (\x -> (\y -> x) a) b
+//        System.out.println("--------------------------");
+//        assertEquals("b", lambdaTestNode2().reduceByName(true).toString(false));
 
         // (\x -> (\y -> x)) b a
         System.out.println("--------------------------");

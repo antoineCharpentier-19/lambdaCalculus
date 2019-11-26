@@ -3,12 +3,16 @@ package model;
 import util.NodeUpdateObserver;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public interface Node {
 
     default Node reduceByName(boolean print) {
         if (print) System.out.println(this.toString(false));
-        return reduceByName(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
+        AtomicInteger c = new AtomicInteger(0);
+        Node output = reduceByNeed(print ? Optional.of(newVal -> {System.out.println(newVal.toString(false)); c.incrementAndGet();}) : Optional.of(newVal -> c.incrementAndGet()));
+        System.out.println(c.intValue() + " réductions en call by Name.");
+        return output;
     }
 
     default Node reduceByName(Optional<NodeUpdateObserver> observer) {
@@ -17,7 +21,10 @@ public interface Node {
 
     default Node reduceByValue(boolean print) {
         if (print) System.out.println(this.toString(false));
-        return reduceByValue(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
+        AtomicInteger c = new AtomicInteger(0);
+        Node output = reduceByValue(print ? Optional.of(newVal -> {System.out.println(newVal.toString(false)); c.incrementAndGet();}) : Optional.of(x -> c.incrementAndGet()));
+        System.out.println(c.intValue() + " réductions en call by Value.");
+        return output;
     }
 
     default Node reduceByValue(Optional<NodeUpdateObserver> observer) {
@@ -26,7 +33,10 @@ public interface Node {
 
     default Node reduceByNeed(boolean print) {
         if (print) System.out.println(this.toString(false));
-        return reduceByNeed(print ? Optional.of(newVal -> System.out.println(newVal.toString(false))) : Optional.empty());
+        AtomicInteger c = new AtomicInteger(0);
+        Node output = reduceByNeed(print ? Optional.of(newVal -> {System.out.println(newVal.toString(false)); c.incrementAndGet();}) : Optional.of(x -> c.incrementAndGet()));
+        System.out.println(c.intValue() + " réductions en call by Need.");
+        return output;
     }
 
     default Node reduceByNeed(Optional<NodeUpdateObserver> observer) {

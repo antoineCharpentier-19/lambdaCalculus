@@ -70,10 +70,7 @@ public class ReduceByValueTest {
         assertEquals(node(6), foldRApplied().reduceByValue(true));
 
         System.out.println("--------------------------");
-        assertEquals("((\\x -> x+x)(3) : (\\x -> x+x)(2) : (\\x -> x+x)(1) : [])", mapFoldRApplied().reduceByValue(true).print());
-        System.out.println("--------------------------");
-        // if we want to see "(6 : 4 : 2 : [])", we have to print this expression : mapFoldRApplied().reduceByValue(true).toString(true)
-        assertEquals("(6 : 4 : 2 : [])", mapFoldRApplied().reduceByValue(true).toString(true));
+        assertEquals("(6 : 4 : 2 : [])", mapFoldRApplied().reduceByValue(true).print());
     }
 
     @Test
@@ -83,16 +80,12 @@ public class ReduceByValueTest {
 
         System.out.println("--------------------------");
         assertEquals("(2 : 3 : 4 : [])", mapApplied1().reduceByValue(true).toString(true));
-        System.out.println("--------------------------");
-        assertEquals("((\\x -> x+1)(head ((1 : 2 : 3 : []))) : MAP(tail ((1 : 2 : 3 : [])))((\\x -> x+1)))", mapApplied1().reduceByValue(true).print());
     }
 
     @Test
     public void booleanListTest() {
         System.out.println("--------------------------");
-        assertEquals("((\\x -> not (x))(head ((true : false : false : []))) : MAP(tail ((true : false : false : [])))((\\x -> not (x))))", mapAppliedOnBoolList().reduceByValue(true).print());
-        System.out.println("--------------------------");
-        assertEquals("(false : true : true : [])", mapAppliedOnBoolList().reduceByValue(true).toString(true));
+        assertEquals("(false : true : true : [])", mapAppliedOnBoolList().reduceByValue(true).print());
     }
 }
 

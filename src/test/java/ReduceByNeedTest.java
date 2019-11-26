@@ -11,7 +11,8 @@ public class ReduceByNeedTest {
     public void test() {
 //        tripleTimes().reduceByNeed(true);
 //
-        multiApply(pow(), node("2"), node("3")).reduceByName(true);
+        //multiApply(pow(), node("2"), node("3")).reduceByName(true);
+        new Cons(new UnOp("head", new Cons(new BiOp(node(1), "+", node(2)), new Nil())), new Nil()).reduceByValue(true);
     }
 
     @Test
@@ -31,7 +32,7 @@ public class ReduceByNeedTest {
         System.out.println("--------------------------");
         assertEquals("(false : true : true : [])", mapAppliedOnBoolList().reduceByNeed(true).toString(true));
         System.out.println("--------------------------");
-        System.out.println(mapAppliedOnBoolList().reduceByNeed(true).toString(true));
+        System.out.println("top level printer : " + mapAppliedOnBoolList().reduceByNeed(true).toString(true));
     }
 
     @Test
@@ -61,7 +62,7 @@ public class ReduceByNeedTest {
         INSERT.setNode(insert);
         Node node = multiApply(INSERT, node(2), intList(1, 2, 3));
         System.out.println("--------------------------");
-        System.out.println(node.reduceByNeed(true).toString(true));
+        System.out.println("top level printer : " + node.reduceByNeed(true).toString(true));
 
         /*
          mySort'' :: [Int] -> [Int]
@@ -87,6 +88,6 @@ public class ReduceByNeedTest {
         SORT.setNode(sort);
         node = new Application(SORT, intList(3,2,1));
         System.out.println("--------------------------");
-        System.out.println(node.reduceByValue(true).toString(true));
+        System.out.println("top level printer : " + node.reduceByValue(true).toString(true));
     }
 }
