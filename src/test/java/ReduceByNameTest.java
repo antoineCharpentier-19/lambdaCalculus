@@ -91,7 +91,7 @@ public class ReduceByNameTest {
         Node infOne = new Cons(node(1), INF_ONE);
         INF_ONE.setNode(infOne);
 
-        assertEquals("INF", new UnOp("tail", infOne).reduceByName(true).print());
+        assertEquals("(1 : INF)", new UnOp("tail", infOne).reduceByName(true).print());
         System.out.println("--------------------------");
         assertEquals("1", new UnOp("head", new UnOp("tail", new UnOp("tail", new UnOp("tail", infOne)))).reduceByName(true).print());
         System.out.println("--------------------------");

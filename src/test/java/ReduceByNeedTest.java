@@ -10,6 +10,8 @@ public class ReduceByNeedTest {
     @Test
     public void test() {
         tripleTimes().reduceByNeed(true);
+//
+        multiApply(pow(), node("2"), node("3")).reduceByNeed(true);
     }
 
     private Node tripleTimes() {

@@ -57,7 +57,7 @@ public class UnOp implements Node {
         }
         Node result = op.converter.apply(reducedBody);
         observer.ifPresent(obs -> obs.onUpdate(result));
-        return result;
+        return result.reduceByName(observer);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class UnOp implements Node {
         Optional<NodeUpdateObserver> nodeUpdateObserver = observer.map(obs -> newVal -> obs.onUpdate(new UnOp(op, newVal)));
         Node reducedBody = body;
         while(!(reducedBody instanceof IrreductibleNode))
-            reducedBody = reducedBody.reduceByValue(nodeUpdateObserver);
+            reducedBody = reducedBody.reduceByValue(nodeUpdateObserver).unwrap();
         // TODO - tail on an infinite list should not happen
 //        if (op == Op.TAIL || op == Op.HEAD) {
 //            while (!(reducedBody instanceof Cons))
@@ -73,7 +73,7 @@ public class UnOp implements Node {
 //        }
         Node result = op.converter.apply(reducedBody);
         observer.ifPresent(obs -> obs.onUpdate(result));
-        return result;
+        return result.reduceByValue(observer);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class UnOp implements Node {
             reducedBody = reducedBody.reduceByValue(nodeUpdateObserver);
         Node result = op.converter.apply(reducedBody);
         observer.ifPresent(obs -> obs.onUpdate(result));
-        return result;
+        return result.reduceByNeed(observer);
     }
 
 

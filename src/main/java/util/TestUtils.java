@@ -162,6 +162,23 @@ public class TestUtils {
                                         new Application(node("f"), node("x")), node("y")))));
     }
 
+    public static LambdaExpr pow() {
+        RecursiveNode POW = new RecursiveNode("POW");
+        LambdaExpr pow = multiLambda(new String[]{"x", "n"},
+                new IfThenElse(
+                        new BiOp(node("n"), "==", node("0")),
+                        node("1"),
+                        new BiOp(
+                                node("x"),
+                                "*",
+                                multiApply(POW, node("x"), new BiOp(
+                                        node("n"),
+                                        "-",
+                                        node("1"))))));
+        POW.setNode(pow);
+        return pow;
+    }
+
     public static RecursiveNode listsTestFoldR() {
         RecursiveNode FOLDR = new RecursiveNode("FOLD");
         LambdaExpr foldr = multiLambda(new String[]{"l", "p", "f"},
