@@ -1,5 +1,6 @@
 package model;
 
+<<<<<<< Updated upstream
 import lombok.Getter;
 import util.NodeUpdateObserver;
 
@@ -46,4 +47,7 @@ public class Application implements Node {
     public Node replaceOcc(String name, Node arg) {
         return new Application(left.replaceOcc(name, arg), right.replaceOcc(name, arg));
     }
+=======
+public class git pApplication implements Expression {
+>>>>>>> Stashed changes
 }
