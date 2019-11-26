@@ -1,17 +1,14 @@
 package model;
 
-import lombok.Data;
 import util.NodeUpdateObserver;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Data
 public class BiOp implements Node{
     private final Node left;
     private final Node right;
@@ -57,61 +54,61 @@ public class BiOp implements Node{
     }
 
     @Override
-    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
+    public Node reduceByName(NodeUpdateObserver observer) {
         Node reducedLeft = left;
         while(!(reducedLeft instanceof IrreductibleNode))
-            reducedLeft = reducedLeft.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right)))).unwrap();
+            reducedLeft = reducedLeft.reduceByName(newVal -> observer.onUpdate(new BiOp(newVal, op, right))).unwrap();
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
             Node finalReducedLeft = reducedLeft;
-            observer.ifPresent(obs -> obs.onUpdate(finalReducedLeft));
+            observer.onUpdate(finalReducedLeft);
             return reducedLeft;
         }
         Node reducedRight = right;
         while(!(reducedRight instanceof IrreductibleNode)) {
             Node finalReducedLeft1 = reducedLeft;
-            reducedRight = reducedRight.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(finalReducedLeft1, op, newVal)))).unwrap();
+            reducedRight = reducedRight.reduceByName(newVal -> observer.onUpdate(new BiOp(finalReducedLeft1, op, newVal))).unwrap();
         }
         Node result = op.converter.apply(reducedLeft, reducedRight);
-        observer.ifPresent(obs -> obs.onUpdate(result));
+        observer.onUpdate(result);
         return result;
     }
 
     @Override
-    public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
+    public Node reduceByValue(NodeUpdateObserver observer) {
         Node reducedLeft = left;
         while(!(reducedLeft.unwrap() instanceof IrreductibleNode))
-            reducedLeft = reducedLeft.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right))));
+            reducedLeft = reducedLeft.reduceByValue(newVal -> observer.onUpdate(new BiOp(newVal, op, right)));
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
             Node finalReducedLeft = reducedLeft;
-            observer.ifPresent(obs -> obs.onUpdate(finalReducedLeft));
+            observer.onUpdate(finalReducedLeft);
             return reducedLeft;
         }
         Node reducedRight = right;
         while(!(reducedRight.unwrap() instanceof IrreductibleNode)) {
             Node finalReducedLeft1 = reducedLeft;
-            reducedRight = reducedRight.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(finalReducedLeft1, op, newVal)))).unwrap();
+            reducedRight = reducedRight.reduceByValue(newVal -> observer.onUpdate(new BiOp(finalReducedLeft1, op, newVal))).unwrap();
         }
         Node result = op.converter.apply(reducedLeft, reducedRight);
-        observer.ifPresent(obs -> obs.onUpdate(result));
+        observer.onUpdate(result);
         return result;
     }
 
     @Override
-    public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
-        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(newVal, op, right)))).unwrap();
+    public Node reduceByNeed(NodeUpdateObserver observer) {
+        Node reducedLeft = left.reduceByNeed(newVal -> observer.onUpdate(new BiOp(newVal, op, right))).unwrap();
         // special cases
         if (op == Op.AND && !((BoolConstant) reducedLeft).getValue() || op == Op.OR && ((BoolConstant) reducedLeft).getValue()) {
             Node finalReducedLeft = reducedLeft;
-            observer.ifPresent(obs -> obs.onUpdate(finalReducedLeft));
+            observer.onUpdate(finalReducedLeft);
             return reducedLeft;
         }
         Node finalReducedLeft1 = reducedLeft;
-        Node reducedRight = right.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new BiOp(finalReducedLeft1, op, newVal)))).unwrap();
+        Node reducedRight = right.reduceByNeed(newVal -> observer.onUpdate(new BiOp(finalReducedLeft1, op, newVal))).unwrap();
 
         Node result = op.converter.apply(reducedLeft, reducedRight);
-        observer.ifPresent(obs -> obs.onUpdate(result));
+        observer.onUpdate(result);
         return result;
     }
 

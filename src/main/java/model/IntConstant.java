@@ -1,10 +1,7 @@
 package model;
 
-import lombok.Getter;
-
 import java.util.Objects;
 
-@Getter
 public class IntConstant implements IrreductibleNode {
 
     private int value;
@@ -29,5 +26,9 @@ public class IntConstant implements IrreductibleNode {
     @Override
     public int hashCode() {
         return Objects.hash(getValue());
+    }
+
+    public int getValue() {
+        return value;
     }
 }

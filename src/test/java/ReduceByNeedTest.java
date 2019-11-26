@@ -3,7 +3,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static util.TestUtils.*;
-import static util.TestUtils.mapFoldRApplied;
 
 public class ReduceByNeedTest {
 

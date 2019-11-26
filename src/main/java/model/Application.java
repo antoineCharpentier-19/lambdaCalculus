@@ -1,11 +1,7 @@
 package model;
 
-import lombok.Getter;
 import util.NodeUpdateObserver;
 
-import java.util.Optional;
-
-@Getter
 public class Application implements Node {
     private final Node left;
     private final Node right;
@@ -21,25 +17,25 @@ public class Application implements Node {
     }
 
     @Override
-    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
-        Node betaReduced = ((LambdaExpr) left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))).unwrap()).betaReduce(right);
-        observer.ifPresent(o -> o.onUpdate(betaReduced));
+    public Node reduceByName(NodeUpdateObserver observer) {
+        Node betaReduced = ((LambdaExpr) left.reduceByName(newVal -> observer.onUpdate(new Application(newVal, right))).unwrap()).betaReduce(right);
+        observer.onUpdate(betaReduced);
         return betaReduced.reduceByName(observer);
     }
 
     @Override
-    public Node reduceByValue(Optional<NodeUpdateObserver> observer) {
-        LambdaExpr l = ((LambdaExpr) left.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))));
-        Node betaReduced = l.betaReduce(right.reduceByValue(observer.map(obs -> newVal -> obs.onUpdate(new Application(l, newVal)))));
-        observer.ifPresent(o -> o.onUpdate(betaReduced));
+    public Node reduceByValue(NodeUpdateObserver observer) {
+        LambdaExpr l = ((LambdaExpr) left.reduceByValue(newVal -> observer.onUpdate(new Application(newVal, right))));
+        Node betaReduced = l.betaReduce(right.reduceByValue(newVal -> observer.onUpdate(new Application(l, newVal))));
+        observer.onUpdate(betaReduced);
         return betaReduced.reduceByValue(observer);
     }
 
     @Override
-    public Node reduceByNeed(Optional<NodeUpdateObserver> observer) {
-        Node reducedLeft = left.reduceByNeed(observer.map(obs -> newVal -> obs.onUpdate(new Application(newVal, right)))).unwrap();
+    public Node reduceByNeed(NodeUpdateObserver observer) {
+        Node reducedLeft = left.reduceByNeed(newVal -> observer.onUpdate(new Application(newVal, right))).unwrap();
         Node betaReduced = ((LambdaExpr) reducedLeft).betaReduce(new IndirectionNode(right));
-        observer.ifPresent(o -> o.onUpdate(betaReduced));
+        observer.onUpdate(betaReduced);
         return betaReduced.reduceByNeed(observer);
     }
 
