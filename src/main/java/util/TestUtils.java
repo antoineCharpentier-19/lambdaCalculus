@@ -1,14 +1,22 @@
 package util;
 
 import model.*;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.Function;
 
 public class TestUtils {
 
+    public static boolean isNumeric(String s){
+        try{
+            Integer.parseInt(s);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static Node node(String string) {
-        if (StringUtils.isNumeric(string)) {
+        if (isNumeric(string)) {
             return new IntConstant(Integer.parseInt(string));
         } else if (string.equalsIgnoreCase("false") || string.equalsIgnoreCase("true")) {
             return Boolean.parseBoolean(string) ? BoolConstant.t : BoolConstant.t;
