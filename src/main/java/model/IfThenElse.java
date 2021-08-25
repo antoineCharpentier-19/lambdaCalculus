@@ -1,11 +1,7 @@
 package model;
 
-import lombok.Getter;
 import util.NodeUpdateObserver;
 
-import java.util.Optional;
-
-@Getter
 public class IfThenElse implements Node {
     private final Node cond;
     private final Node left;
@@ -23,15 +19,41 @@ public class IfThenElse implements Node {
     }
 
     @Override
-    public Node reduceByName(Optional<NodeUpdateObserver> observer) {
-        BoolConstant newCond = (BoolConstant) cond.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new IfThenElse(newVal, left, right))));
-        Node newLeft = left.reduceByName(observer.map(obs -> newVal -> obs.onUpdate(new IfThenElse(newCond, newVal, right))));
+    public Node reduceByName(NodeUpdateObserver observer) {
+        BoolConstant newCond = (BoolConstant) cond.reduceByName(newVal -> observer.onUpdate(new IfThenElse(newVal, left, right)));
+        Node newLeft = left.reduceByName(newVal -> observer.onUpdate(new IfThenElse(newCond, newVal, right)));
         if (newCond.getValue()) {
-            observer.ifPresent(obs -> obs.onUpdate(newLeft));
+            observer.onUpdate(newLeft);
             return newLeft;
         } else {
-            observer.ifPresent(obs -> obs.onUpdate(right));
+            observer.onUpdate(right);
             return right.reduceByName(observer);
+        }
+    }
+
+    @Override
+    public Node reduceByValue(NodeUpdateObserver observer) {
+        BoolConstant newCond = (BoolConstant) cond.reduceByValue(newVal -> observer.onUpdate(new IfThenElse(newVal, left, right)));
+        Node newLeft = left.reduceByValue(newVal -> observer.onUpdate(new IfThenElse(newCond, newVal, right)));
+        if (newCond.getValue()) {
+            observer.onUpdate(newLeft);
+            return newLeft;
+        } else {
+            observer.onUpdate(right);
+            return right.reduceByValue(observer);
+        }
+    }
+
+    @Override
+    public Node reduceByNeed(NodeUpdateObserver observer) {
+        BoolConstant newCond = (BoolConstant) cond.reduceByNeed(newVal -> observer.onUpdate(new IfThenElse(newVal, left, right)));
+        Node newLeft = left.reduceByNeed(newVal -> observer.onUpdate(new IfThenElse(newCond, newVal, right)));
+        if (newCond.getValue()) {
+            observer.onUpdate(newLeft);
+            return newLeft;
+        } else {
+            observer.onUpdate(right);
+            return right.reduceByNeed(observer);
         }
     }
 

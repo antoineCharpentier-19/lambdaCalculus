@@ -1,9 +1,6 @@
 package model;
 
-import lombok.Getter;
-
-@Getter
-public class Variable implements Node {
+public class Variable implements IrreductibleNode {
     private final String name;
 
     public Variable(String name) {

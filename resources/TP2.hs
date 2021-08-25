@@ -34,3 +34,19 @@ f2 b c = (\x -> (\y -> x)) b c
 
 if' = (\x -> if x then x else x) 
 not' = (\x -> not x)
+
+
+myInsert' :: Int -> [Int] -> [Int]
+myInsert' x y = if length y == 0
+                then [x]
+                else if x < head y
+                    then x : y
+                    else
+                        (head y) : myInsert' x (tail y)
+
+mySort'' :: [Int] -> [Int]
+mySort'' x =    if length x == 0
+                then []
+                else if length x == 1
+                    then x
+                    else myInsert' (head x) (mySort'' (tail x))
